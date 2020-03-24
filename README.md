@@ -3,7 +3,7 @@ gnome-trash
 
 A gnome shell extension to manage your trash.
 
-![Screenshot](./media/screenshot.png "Screenshot")
+![Screenshot](https://gitlab.com/b00f/gnome-trash/-/raw/master/media/screenshot.png "Screenshot")
 
 It allows you to manage the trash items and empty or open the Trash folder. It hides completely when the trash is empty, and lists the files in the trash bin in the panel menu.
 

@@ -2,7 +2,7 @@
 
 EXT_NAME = gnome-trash
 UUID = $(EXT_NAME)
-BASE_MODULES = LICENSE extension.js metadata.json README.md stylesheet.css media/icon.png media/screenshot.png
+BASE_FILES = LICENSE extension.js metadata.json README.md stylesheet.css
 MSGSRC = $(wildcard po/*.po)
 INSTALLNAME = $(UUID)
 INSTALLBASE = $(HOME)/.local/share/gnome-shell/extensions
@@ -20,18 +20,19 @@ install: build
 	@mkdir -p $(INSTALLBASE)/$(INSTALLNAME)
 	@cp -r ./build/* $(INSTALLBASE)/$(INSTALLNAME)/
 	@rm -fR build
-	@echo done
+	@echo done!
 
-zip-file: install
-	cd build ; \
-	zip -qr "$(UUID)$(FILESUFFIX).zip" .
-	-rm -fR build
+zip-file: build
+	@cd ./build ; \
+	zip -qr "$(UUID).zip" .
+	@mv ./build/"$(UUID).zip" .
+	@-rm -fR build
+	@echo done!
 
 build:
 	@rm -fR ./build
-	@mkdir -p build
-	@cp $(BASE_MODULES) $(LOCALE) build
-	@mkdir -p build/locale
+	@mkdir -p build build/locale
+	@cp $(BASE_FILES) build
 	@for l in $(MSGSRC:.po=.mo) ; do \
 		lf=build/locale/`basename $$l .mo`; \
 		mkdir -p $$lf; \
