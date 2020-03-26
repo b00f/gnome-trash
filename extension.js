@@ -16,18 +16,18 @@ const _ = Gettext.gettext;
 const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
   constructor() {
     super();
-    let scrollView = new St.ScrollView({
+    let scroll_view = new St.ScrollView({
       x_fill: true,
       y_fill: false,
       y_align: St.Align.START,
       overlay_scrollbars: true,
       style_class: 'vfade applications-scrollbox'
     });
-    scrollView.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
-    scrollView.style = `height: 500px; width: 360px`;
+    scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+    scroll_view.style = `height: 400px; width: 360px`;
     this.innerMenu = new PopupMenu.PopupMenuSection();
-    scrollView.add_actor(this.innerMenu.actor);
-    this.actor.add_actor(scrollView);
+    scroll_view.add_actor(this.innerMenu.actor);
+    this.actor.add_actor(scroll_view);
   }
 
   addMenuItem(item) {
@@ -40,7 +40,7 @@ const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
 };
 
 
-const TrashMenuItem = GObject.registerClass(
+const trashMenuItem = GObject.registerClass(
   class TrashMenuItem extends PopupMenu.PopupBaseMenuItem {
     _init(text, icon_name, gicon, callback) {
 
@@ -61,10 +61,10 @@ const TrashMenuItem = GObject.registerClass(
         text = text.substr(0, 31) + '...';
       }
 
-      this.icon = new St.Icon(icon_cfg);
-      this.add_child(this.icon);
-      this.label = new St.Label({ text: text });
-      this.add_child(this.label);
+      let icon = new St.Icon(icon_cfg);
+      this.add_child(icon);
+      let label = new St.Label({ text: text });
+      this.add_child(label);
       if (callback) {
         this.connect('activate', callback);
       }
@@ -77,8 +77,8 @@ const TrashMenuItem = GObject.registerClass(
 );
 
 
-const TrashMenu = GObject.registerClass(
-  class TrashMenu extends PanelMenu.Button {
+const trashMenu = GObject.registerClass(
+  class trashMenu extends PanelMenu.Button {
     _init() {
 
       super._init(0.0, _("Trash"));
@@ -90,16 +90,16 @@ const TrashMenu = GObject.registerClass(
 
       this.trash_location = GLib.get_home_dir() + '/.local/share/Trash/files/';
       this.trash_path = 'file:///' + this.trash_location;
-      this.trash_file = Gio.file_new_for_uri(this.trash_path);
+      this.trash_uri = Gio.file_new_for_uri(this.trash_path);
 
-      this._addMenuItems();
-      this._onTrashChange();
-      this._setupWatch();
+      this.addMenuItems();
+      this.onTrashChange();
+      this.setupWatch();
 
       log("gnome-trash initialized successfully");
     }
 
-    _addMenuItems() {
+    addMenuItems() {
       let menu_item = function (text, icon_name, callback) {
         let item = new PopupMenu.PopupBaseMenuItem();
 
@@ -114,33 +114,33 @@ const TrashMenu = GObject.registerClass(
         return item;
       }
 
-      this.filesList = new ScrollableMenu();
-      this.menu.addMenuItem(this.filesList);
+      this.item_list = new ScrollableMenu();
+      this.menu.addMenuItem(this.item_list);
 
-      this.separator = new PopupMenu.PopupSeparatorMenuItem();
-      this.menu.addMenuItem(this.separator);
+      let separator = new PopupMenu.PopupSeparatorMenuItem();
+      this.menu.addMenuItem(separator);
 
       this.menu.addMenuItem(menu_item(_("Empty Trash"),
         "edit-delete-symbolic",
-        this._onEmptyTrash.bind(this)));
+        this.onEmptyTrash.bind(this)));
 
       this.menu.addMenuItem(menu_item(_("Open Trash"),
         "folder-open-symbolic",
-        this._onOpenTrash.bind(this)));
+        this.onOpenTrash.bind(this)));
     }
 
     destroy() {
       super.destroy();
     }
 
-    _setupWatch() {
-      this.monitor = this.trash_file.monitor_directory(0, null);
-      this.monitor.connect('changed', this._onTrashChange.bind(this));
+    setupWatch() {
+      this.monitor = this.trash_uri.monitor_directory(0, null);
+      this.monitor.connect('changed', this.onTrashChange.bind(this));
     }
 
-    _onTrashChange() {
-      this._clearMenu();
-      if (this._listFilesInTrash() == 0) {
+    onTrashChange() {
+      this.clearMenu();
+      if (this.listItems() == 0) {
         this.visible = false;
       } else {
         this.show();
@@ -148,7 +148,7 @@ const TrashMenu = GObject.registerClass(
       }
     }
 
-    _listFilesInTrash() {
+    listItems() {
       let trash_item = function (that, file_info) {
         let item = new PopupMenu.PopupBaseMenuItem();
         let file_name = file_info.get_name();
@@ -168,7 +168,7 @@ const TrashMenu = GObject.registerClass(
         let label = new St.Label({ text: display_name });
         item.add_child(label);
         item.connect('activate', () => {
-          that._openTrashItem(file_name);
+          that.openTrashItem(file_name);
         });
 
         /*
@@ -193,7 +193,7 @@ const TrashMenu = GObject.registerClass(
         item.icon_restore_btn = icon_restore_btn;
         item.favoritePressId = icon_restore_btn.connect('button-press-event',
           () => {
-            that._restoreTrashItem(file_name);
+            that.restoreItem(file_name);
           }
         );
         */
@@ -220,68 +220,68 @@ const TrashMenu = GObject.registerClass(
         item.icon_delete_btn = icon_delete_btn;
         item.favoritePressId = icon_delete_btn.connect('button-press-event',
           () => {
-            that._deleteTrashItem(file_name);
+            that.deleteItem(file_name);
           }
         );
         return item;
       }
 
-      let children = this.trash_file.enumerate_children('*', 0, null);
+      let children = this.trash_uri.enumerate_children('*', 0, null);
       let count = 0;
       let file_info = null;
 
       while ((file_info = children.next_file(null)) != null) {
-        this.filesList.addMenuItem(trash_item(this, file_info));
+        this.item_list.addMenuItem(trash_item(this, file_info));
         count++
       }
       children.close(null)
       return count;
     }
 
-    _clearMenu() {
-      this.filesList.removeAll();
+    clearMenu() {
+      this.item_list.removeAll();
     }
 
-    _openTrashItem(file_name) {
-      let file = this.trash_file.get_child(file_name);
+    openTrashItem(file_name) {
+      let file = this.trash_uri.get_child(file_name);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this.menu.close();
     }
 
-    _onEmptyTrash() {
+    onEmptyTrash() {
       const title = _("Empty Trash?");
       const message = _("Are you sure you want to delete all items from the trash?\n\
           This operation cannot be undone.");
 
-      new ConfirmDialog(title, message, _("Empty"), this._doEmptyTrash.bind(this)).open();
+      new confirmDialog(title, message, _("Empty"), this.doEmptyTrash.bind(this)).open();
     }
 
-    _doEmptyTrash() {
+    doEmptyTrash() {
       let argv = ['gio', 'trash', '--empty'];
       let flags = GLib.SpawnFlags.SEARCH_PATH;
       GLib.spawn_async(null, argv, null, flags, null);
     }
 
-    _onOpenTrash() {
+    onOpenTrash() {
       let argv = ['nautilus', 'trash://'];
       let flags = GLib.SpawnFlags.SEARCH_PATH;
       GLib.spawn_async(null, argv, null, flags, null);
     }
 
-    _restoreTrashItem(file_name) {
+    restoreItem(file_name) {
       // TODO: Implement restore item from trash bin.
 
     }
 
-    _deleteTrashItem(file_name) {
+    deleteItem(file_name) {
       const title = _("Delete item permanently");
       let message = _("Are you sure you want to delete '" + file_name + "'?\n\
       This operation cannot be undone.");
 
-      new ConfirmDialog(title, message, _("Delete"), (this._doDeleteItem.bind(this, file_name))).open();
+      new confirmDialog(title, message, _("Delete"), (this.doDeleteItem.bind(this, file_name))).open();
     }
 
-    _doDeleteItem(filename) {
+    doDeleteItem(filename) {
       log("trying to delete: " + filename);
       let argv = ['rm', '-rf', this.trash_location + filename];
       let flags = GLib.SpawnFlags.SEARCH_PATH;
@@ -291,37 +291,37 @@ const TrashMenu = GObject.registerClass(
 );
 
 
-const ConfirmDialog = GObject.registerClass(
-  class ConfirmDialog extends ModalDialog.ModalDialog {
+const confirmDialog = GObject.registerClass(
+  class confirmDialog extends ModalDialog.ModalDialog {
     _init(title, message, action, callback) {
       super._init({ styleClass: null });
 
-      let mainContentBox = new St.BoxLayout({
+      let main_box = new St.BoxLayout({
         style_class: 'polkit-dialog-main-layout',
         vertical: false
       });
-      this.contentLayout.add(mainContentBox, { x_fill: true, y_fill: true });
+      this.contentLayout.add(main_box, { x_fill: true, y_fill: true });
 
-      let messageBox = new St.BoxLayout({
+      let message_box = new St.BoxLayout({
         style_class: 'polkit-dialog-message-layout',
         vertical: true
       });
-      mainContentBox.add(messageBox, { y_align: St.Align.START });
+      main_box.add(message_box, { y_align: St.Align.START });
 
-      this._subjectLabel = new St.Label({
+      let subject_label = new St.Label({
         style_class: 'polkit-dialog-headline',
         style: `font-weight: 700`,
         text: title
       });
 
-      messageBox.add(this._subjectLabel, { y_fill: false, y_align: St.Align.START });
+      message_box.add(subject_label, { y_fill: false, y_align: St.Align.START });
 
-      this._descriptionLabel = new St.Label({
+      let desc_label = new St.Label({
         style_class: 'polkit-dialog-description',
-        text: Gettext.gettext(message)
+        text: _(message)
       });
 
-      messageBox.add(this._descriptionLabel, { y_fill: true, y_align: St.Align.START });
+      message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });
 
       this.setButtons([
         {
@@ -350,7 +350,7 @@ function init(extensionMeta) {
 let _indicator;
 
 function enable() {
-  _indicator = new TrashMenu;
+  _indicator = new trashMenu;
   Main.panel.addToStatusArea('trash_button', _indicator);
 }
 
