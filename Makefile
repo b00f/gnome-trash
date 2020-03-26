@@ -7,7 +7,7 @@ BUNDLE = $(UUID).shell-extension.zip
 all: pack
 
 pack:
-	@gnome-extensions pack --force
+	@gnome-extensions pack --force --extra-source=README.md --extra-source=LICENSE
 	@echo extension packed!
 
 install: pack
