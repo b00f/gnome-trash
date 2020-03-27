@@ -2,6 +2,7 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
+const CheckBox = imports.ui.checkBox;
 const ModalDialog = imports.ui.modalDialog;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
@@ -24,7 +25,7 @@ const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
       style_class: 'vfade applications-scrollbox'
     });
     scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
-    scroll_view.style = `height: 400px; width: 360px`;
+    scroll_view.style = `height: 500px; width: 360px`;
     this.innerMenu = new PopupMenu.PopupMenuSection();
     scroll_view.add_actor(this.innerMenu.actor);
     this.actor.add_actor(scroll_view);
@@ -95,6 +96,8 @@ const trashMenu = GObject.registerClass(
       this.addMenuItems();
       this.onTrashChange();
       this.setupWatch();
+
+      this.ask_for_delete_item = { flag: CONFIRM_ASK };
 
       log("gnome-trash initialized successfully");
     }
@@ -253,7 +256,7 @@ const trashMenu = GObject.registerClass(
       const message = _("Are you sure you want to delete all items from the trash?\n\
           This operation cannot be undone.");
 
-      new confirmDialog(title, message, _("Empty"), this.doEmptyTrash.bind(this)).open();
+      this.openConfirmDialog(title, message, _("Empty"), { flag: CONFIRM_ALWAYS_ASK }, this.doEmptyTrash.bind(this));
     }
 
     doEmptyTrash() {
@@ -278,7 +281,7 @@ const trashMenu = GObject.registerClass(
       let message = _("Are you sure you want to delete '" + file_name + "'?\n\
       This operation cannot be undone.");
 
-      new confirmDialog(title, message, _("Delete"), (this.doDeleteItem.bind(this, file_name))).open();
+      this.openConfirmDialog(title, message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
     }
 
     doDeleteItem(filename) {
@@ -287,14 +290,26 @@ const trashMenu = GObject.registerClass(
       let flags = GLib.SpawnFlags.SEARCH_PATH;
       GLib.spawn_async(null, argv, null, flags, null);
     }
+
+    openConfirmDialog(title, message, ok_label, dont_ask, callback) {
+      if (dont_ask.flag == CONFIRM_DONT_ASK) {
+        callback();
+      } else {
+        new confirmDialog(title, message, ok_label, dont_ask, callback).open();
+      }
+    }
   }
 );
 
+const CONFIRM_ALWAYS_ASK = 0;
+const CONFIRM_DONT_ASK = 1;
+const CONFIRM_ASK = 2;
 
 const confirmDialog = GObject.registerClass(
   class confirmDialog extends ModalDialog.ModalDialog {
-    _init(title, message, action, callback) {
-      super._init({ styleClass: null });
+
+    _init(title, message, ok_label, dont_ask, callback) {
+      super._init();
 
       let main_box = new St.BoxLayout({
         style_class: 'polkit-dialog-main-layout',
@@ -314,14 +329,20 @@ const confirmDialog = GObject.registerClass(
         text: title
       });
 
-      message_box.add(subject_label, { y_fill: false, y_align: St.Align.START });
+      message_box.add(subject_label, { y_fill: true, y_align: St.Align.START });
 
       let desc_label = new St.Label({
         style_class: 'polkit-dialog-description',
+        style: 'padding-top: 10px; padding-bottom: 20px;',
         text: _(message)
       });
 
       message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });
+
+      if (dont_ask.flag == CONFIRM_ASK) {
+        this.dont_ask_checkbox = new CheckBox.CheckBox(_('Don\'t ask until next restart?'));
+        message_box.add(this.dont_ask_checkbox, { y_fill: true, y_align: St.Align.START });
+      }
 
       this.setButtons([
         {
@@ -332,8 +353,11 @@ const confirmDialog = GObject.registerClass(
           key: Clutter.Escape
         },
         {
-          label: action,
+          label: ok_label,
           action: () => {
+            if (this.dont_ask_checkbox) {
+              dont_ask.flag = (this.dont_ask_checkbox.actor.checked) ? CONFIRM_DONT_ASK : CONFIRM_ASK;
+            }
             this.close();
             callback();
           }
