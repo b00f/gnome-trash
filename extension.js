@@ -209,7 +209,7 @@ const trashMenu = GObject.registerClass(
 
         // restore button
         let icon_restore = new St.Icon({
-          icon_name: "undo-symbolic",
+          icon_name: "edit-undo-symbolic",
           style_class: 'system-status-icon'
         });
 

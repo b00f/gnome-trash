@@ -1,3 +1,7 @@
 .trash-scroll-menu-section {
     max-height:450px;
 }
+
+.modal-dialog {
+    min-width:400px;
+}
