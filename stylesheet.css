@@ -1,7 +1,11 @@
-.trash-scroll-menu-section {
-    max-height:450px;
-}
-
 .modal-dialog {
     min-width:400px;
+}
+
+.gt-scroll-view {
+    height: 400px;
+    width: 360px;
+}
+
+.gt-search-box {
 }

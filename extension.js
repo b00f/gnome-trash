@@ -44,68 +44,34 @@ function spawn_sync(...args) {
   }
 }
 
-const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
+const ScrollableMenu = class ScrollableMenu
+  extends PopupMenu.PopupMenuSection {
   constructor() {
     super();
-    let scroll_view = new St.ScrollView({
-      x_fill: true,
-      y_fill: false,
-      y_align: St.Align.START,
+
+    // scroll_view
+    this.scroll_view = new St.ScrollView({
       overlay_scrollbars: true,
-      style_class: 'vfade applications-scrollbox'
+      style_class: "gt-scroll-view"
     });
-    scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
-    scroll_view.style = `height: 400px; width: 360px`;
-    this.innerMenu = new PopupMenu.PopupMenuSection();
-    scroll_view.add_actor(this.innerMenu.actor);
-    this.actor.add_actor(scroll_view);
+    this.scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+    this.scroll_view_section = new PopupMenu.PopupMenuSection();
+    this.scroll_view.add_actor(this.scroll_view_section.actor);
+    this.actor.add_actor(this.scroll_view);
   }
 
   addMenuItem(item) {
-    this.innerMenu.addMenuItem(item);
+    this.scroll_view_section.addMenuItem(item);
   }
 
   removeAll() {
-    this.innerMenu.removeAll();
+    this.scroll_view_section.removeAll();
+  }
+
+  getAllItems() {
+    return this.scroll_view_section._getMenuItems();
   }
 };
-
-
-const trashMenuItem = GObject.registerClass(
-  class TrashMenuItem extends PopupMenu.PopupBaseMenuItem {
-    _init(text, icon_name, gicon, callback) {
-
-      let enabled = (callback != null)
-      super._init({
-        activate: enabled,
-        reactive: enabled,
-        can_focus: enabled
-      });
-      let icon_cfg = { style_class: 'popup-menu-icon' };
-      if (icon_name != null) {
-        icon_cfg.icon_name = icon_name;
-      } else if (gicon != null) {
-        icon_cfg.gicon = gicon;
-      }
-      // truncate long file_names
-      if (text.length > 32) {
-        text = text.substr(0, 31) + '...';
-      }
-
-      let icon = new St.Icon(icon_cfg);
-      this.add_child(icon);
-      let label = new St.Label({ text: text });
-      this.add_child(label);
-      if (callback) {
-        this.connect('activate', callback);
-      }
-    }
-
-    destroy() {
-      super.destroy();
-    }
-  }
-);
 
 
 const trashMenu = GObject.registerClass(
@@ -124,6 +90,7 @@ const trashMenu = GObject.registerClass(
       this.trash_info = this.trash_path + 'info/';
       this.trash_files_uri = Gio.file_new_for_path(this.trash_files);
 
+      this.addSearchBox();
       this.addMenuItems();
       this.onTrashChange();
       this.setupWatch();
@@ -132,6 +99,40 @@ const trashMenu = GObject.registerClass(
       this.ask_for_restore_item = { flag: CONFIRM_ASK };
 
       log("gnome-trash initialized successfully");
+    }
+
+    addSearchBox() {
+      let item = new PopupMenu.PopupBaseMenuItem({
+        reactive: false,
+        can_focus: true,
+        style_class: 'gt-search-box',
+      });
+
+      // Search box
+      this.search_item = new St.Entry({
+        name: 'searchItem',
+        style_class: 'gt-search-box',
+        can_focus: true,
+        hint_text: _('Type here to search...'),
+        track_hover: true
+      });
+      item.actor.add(this.search_item, { expand: true });
+
+
+      this.search_item.get_clutter_text().connect(
+        'text-changed',
+        this.onSearchItemChanged.bind(this)
+      );
+
+      this.menu.addMenuItem(item, { expand: true });
+
+      let separator = new PopupMenu.PopupSeparatorMenuItem();
+      this.menu.addMenuItem(separator);
+
+      // Clear search when re-open the menu
+      this.menu.connect('open-state-changed', function (self, open) {
+        this.search_item.set_text('');
+      }.bind(this));
     }
 
     addMenuItems() {
@@ -149,8 +150,8 @@ const trashMenu = GObject.registerClass(
         return item;
       }
 
-      this.item_list = new ScrollableMenu();
-      this.menu.addMenuItem(this.item_list);
+      this.trash_scrollable_menu = new ScrollableMenu();
+      this.menu.addMenuItem(this.trash_scrollable_menu);
 
       let separator = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator);
@@ -164,6 +165,23 @@ const trashMenu = GObject.registerClass(
         this.onOpenTrash.bind(this)));
     }
 
+    onSearchItemChanged() {
+      let query = this.search_item.get_text().toLowerCase();
+
+      if (query === '') {
+        this.trash_scrollable_menu.getAllItems().forEach(function (item) {
+          item.actor.visible = true;
+        });
+      }
+      else {
+        this.trash_scrollable_menu.getAllItems().forEach(function (item) {
+          let text = item.file_name.toLowerCase();
+          let matched = text.indexOf(query) >= 0;
+          item.actor.visible = matched
+        });
+      }
+    }
+
     destroy() {
       super.destroy();
     }
@@ -174,6 +192,7 @@ const trashMenu = GObject.registerClass(
     }
 
     onTrashChange() {
+      this.search_item.set_text('');
       this.clearMenu();
       if (this.listItems() == 0) {
         this.visible = false;
@@ -187,9 +206,13 @@ const trashMenu = GObject.registerClass(
       let trash_item = function (that, file_info) {
         let item = new PopupMenu.PopupBaseMenuItem();
 
+
         let file_name = file_info.get_name();
         let display_name = file_info.get_display_name();
         let gicon = file_info.get_symbolic_icon();
+
+        // It uses for searching items
+        item.file_name = file_name;
 
         // truncate long names
         if (display_name.length > 32) {
@@ -260,7 +283,7 @@ const trashMenu = GObject.registerClass(
       let file_info = null;
 
       while ((file_info = children.next_file(null)) != null) {
-        this.item_list.addMenuItem(trash_item(this, file_info));
+        this.trash_scrollable_menu.addMenuItem(trash_item(this, file_info));
         count++
       }
       children.close(null)
@@ -268,7 +291,7 @@ const trashMenu = GObject.registerClass(
     }
 
     clearMenu() {
-      this.item_list.removeAll();
+      this.trash_scrollable_menu.removeAll();
     }
 
     openTrashItem(file_name) {
@@ -386,19 +409,16 @@ const confirmDialog = GObject.registerClass(
       super._init();
 
       let main_box = new St.BoxLayout({
-        style_class: 'polkit-dialog-main-layout',
         vertical: false
       });
       this.contentLayout.add(main_box, { x_fill: true, y_fill: true });
 
       let message_box = new St.BoxLayout({
-        style_class: 'polkit-dialog-message-layout',
         vertical: true
       });
       main_box.add(message_box, { y_align: St.Align.START });
 
       let subject_label = new St.Label({
-        style_class: 'polkit-dialog-headline',
         style: `font-weight: 700`,
         text: title
       });
@@ -406,7 +426,6 @@ const confirmDialog = GObject.registerClass(
       message_box.add(subject_label, { y_fill: true, y_align: St.Align.START });
 
       let desc_label = new St.Label({
-        style_class: 'polkit-dialog-description',
         style: 'padding-top: 10px; padding-bottom: 20px;',
         text: _(message)
       });
