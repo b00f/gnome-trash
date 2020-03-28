@@ -338,6 +338,10 @@ const trashMenu = GObject.registerClass(
       if (dst.query_exists(null)) {
         Main.notifyError(_("Operation failed"), _("Refusing to overwrite existing file."));
       } else {
+        // Create parent directories if they are not exist
+        let parent_dir = path.substring( 0, path.lastIndexOf( "/" ) + 1);
+        spawn_sync("mkdir", "-p", parent_dir);
+
         if (spawn_sync("mv", this.get_item_file_path(file_name), path)) {
           spawn_sync("rm", this.get_item_info_path(file_name));
         }
