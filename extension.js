@@ -89,6 +89,10 @@ const trashMenu = GObject.registerClass(
       this.trash_files = this.trash_path + 'files/';
       this.trash_info = this.trash_path + 'info/';
       this.trash_files_uri = Gio.file_new_for_path(this.trash_files);
+      if (!this.trash_files_uri.query_exists(null)) {
+        Main.notifyError(_("Gnome-trash failed to start"), _("No trash folder is detected."));
+        return;
+      }
 
       this.addSearchBox();
       this.addMenuItems();
