@@ -102,6 +102,10 @@ const trashMenu = GObject.registerClass(
     }
 
     addSearchBox() {
+      // TODO: add 'x' xlear button inside the search box
+      // --------------------------------------------------
+      // |                                              X |
+      // --------------------------------------------------
       let item = new PopupMenu.PopupBaseMenuItem({
         reactive: false,
         can_focus: true,
@@ -192,7 +196,6 @@ const trashMenu = GObject.registerClass(
     }
 
     onTrashChange() {
-      this.search_item.set_text('');
       this.clearMenu();
       if (this.listItems() == 0) {
         this.visible = false;
@@ -200,6 +203,7 @@ const trashMenu = GObject.registerClass(
         this.show();
         this.visible = true;
       }
+      this.onSearchItemChanged();
     }
 
     listItems() {
