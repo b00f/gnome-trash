@@ -4,15 +4,45 @@ const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const CheckBox = imports.ui.checkBox;
 const ModalDialog = imports.ui.modalDialog;
+const Dialog = imports.ui.dialog;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Clutter = imports.gi.Clutter;
+const ByteArray = imports.byteArray;
 
 const Gettext = imports.gettext.domain("gnome-trash");
 const _ = Gettext.gettext;
 
+
+function spawn_async(...args) {
+  try {
+    let flags = GLib.SpawnFlags.SEARCH_PATH;
+    GLib.spawn_async(null, args, null, flags, null);
+  } catch (err) {
+    Main.notifyError(_("Operation failed"), _("Cause: %s").format(err.message));
+
+    throw err;
+  }
+}
+
+function spawn_sync(...args) {
+  try {
+    let flags = GLib.SpawnFlags.SEARCH_PATH;
+    let [_success, _out, err, _errno] = GLib.spawn_sync(null, args, null, flags, null);
+    if (err != "") {
+      Main.notifyError(_("Operation failed"), _("Cause: %s").format(err));
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    Main.notifyError(_("Operation failed"), _("Cause: %s").format(err.message));
+
+    throw err;
+  }
+}
 
 const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
   constructor() {
@@ -25,7 +55,7 @@ const ScrollableMenu = class ScrollableMenu extends PopupMenu.PopupMenuSection {
       style_class: 'vfade applications-scrollbox'
     });
     scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
-    scroll_view.style = `height: 500px; width: 360px`;
+    scroll_view.style = `height: 400px; width: 360px`;
     this.innerMenu = new PopupMenu.PopupMenuSection();
     scroll_view.add_actor(this.innerMenu.actor);
     this.actor.add_actor(scroll_view);
@@ -89,15 +119,17 @@ const trashMenu = GObject.registerClass(
       })
       this.add_actor(this.trashIcon);
 
-      this.trash_location = GLib.get_home_dir() + '/.local/share/Trash/files/';
-      this.trash_path = 'file:///' + this.trash_location;
-      this.trash_uri = Gio.file_new_for_uri(this.trash_path);
+      this.trash_path = GLib.get_home_dir() + '/.local/share/Trash/';
+      this.trash_files = this.trash_path + 'files/';
+      this.trash_info = this.trash_path + 'info/';
+      this.trash_files_uri = Gio.file_new_for_path(this.trash_files);
 
       this.addMenuItems();
       this.onTrashChange();
       this.setupWatch();
 
       this.ask_for_delete_item = { flag: CONFIRM_ASK };
+      this.ask_for_restore_item = { flag: CONFIRM_ASK };
 
       log("gnome-trash initialized successfully");
     }
@@ -137,7 +169,7 @@ const trashMenu = GObject.registerClass(
     }
 
     setupWatch() {
-      this.monitor = this.trash_uri.monitor_directory(0, null);
+      this.monitor = this.trash_files_uri.monitor_directory(0, null);
       this.monitor.connect('changed', this.onTrashChange.bind(this));
     }
 
@@ -154,6 +186,7 @@ const trashMenu = GObject.registerClass(
     listItems() {
       let trash_item = function (that, file_info) {
         let item = new PopupMenu.PopupBaseMenuItem();
+
         let file_name = file_info.get_name();
         let display_name = file_info.get_display_name();
         let gicon = file_info.get_symbolic_icon();
@@ -174,7 +207,6 @@ const trashMenu = GObject.registerClass(
           that.openTrashItem(file_name);
         });
 
-        /*
         // restore button
         let icon_restore = new St.Icon({
           icon_name: "undo-symbolic",
@@ -183,8 +215,6 @@ const trashMenu = GObject.registerClass(
 
         let icon_restore_btn = new St.Button({
           style_class: 'ci-action-btn',
-          x_fill: true,
-          can_focus: true,
           child: icon_restore
         });
 
@@ -199,7 +229,6 @@ const trashMenu = GObject.registerClass(
             that.restoreItem(file_name);
           }
         );
-        */
 
         // delete button
         let icon_delete = new St.Icon({
@@ -209,14 +238,11 @@ const trashMenu = GObject.registerClass(
 
         let icon_delete_btn = new St.Button({
           style_class: 'ci-action-btn',
-          x_fill: true,
-          can_focus: true,
           child: icon_delete
         });
 
         icon_delete_btn.set_x_align(Clutter.ActorAlign.END);
-        //icon_delete_btn.set_x_expand(false);
-        icon_delete_btn.set_x_expand(true);
+        icon_delete_btn.set_x_expand(false);
         icon_delete_btn.set_y_expand(true);
 
         item.actor.add_child(icon_delete_btn);
@@ -229,7 +255,7 @@ const trashMenu = GObject.registerClass(
         return item;
       }
 
-      let children = this.trash_uri.enumerate_children('*', 0, null);
+      let children = this.trash_files_uri.enumerate_children('*', 0, null);
       let count = 0;
       let file_info = null;
 
@@ -246,7 +272,7 @@ const trashMenu = GObject.registerClass(
     }
 
     openTrashItem(file_name) {
-      let file = this.trash_uri.get_child(file_name);
+      let file = this.trash_files_uri.get_child(file_name);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this.menu.close();
     }
@@ -260,20 +286,35 @@ const trashMenu = GObject.registerClass(
     }
 
     doEmptyTrash() {
-      let argv = ['gio', 'trash', '--empty'];
-      let flags = GLib.SpawnFlags.SEARCH_PATH;
-      GLib.spawn_async(null, argv, null, flags, null);
+      spawn_sync('gio', 'trash', '--empty');
     }
 
     onOpenTrash() {
-      let argv = ['nautilus', 'trash://'];
-      let flags = GLib.SpawnFlags.SEARCH_PATH;
-      GLib.spawn_async(null, argv, null, flags, null);
+      spawn_async('nautilus', 'trash:///');
     }
 
     restoreItem(file_name) {
-      // TODO: Implement restore item from trash bin.
+      let info = this.parse_info_file(file_name);
+      const title = _("Restore item?");
+      let message = "";
+      if (info.err) {
+        message = "Error: " + info.err;
+      } else {
+        message = _("Restore '" + file_name + "' to:\n" + info.Path + "?\nDeleted at: " + info.DeletionDate);
+      }
+      this.openConfirmDialog(title, message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
+    }
 
+    doRestoreItem(file_name, path) {
+      log("Trying to restore " + file_name + " to " + path);
+      let dst = Gio.file_new_for_path(path);
+      if (dst.query_exists(null)) {
+        Main.notifyError(_("Operation failed"), _("Refusing to overwrite existing file."));
+      } else {
+        if (spawn_sync("mv", this.get_item_file_path(file_name), path)) {
+          spawn_sync("rm", this.get_item_info_path(file_name));
+        }
+      }
     }
 
     deleteItem(file_name) {
@@ -285,10 +326,9 @@ const trashMenu = GObject.registerClass(
     }
 
     doDeleteItem(filename) {
-      log("trying to delete: " + filename);
-      let argv = ['rm', '-rf', this.trash_location + filename];
-      let flags = GLib.SpawnFlags.SEARCH_PATH;
-      GLib.spawn_async(null, argv, null, flags, null);
+      if (spawn_sync('rm', '-rf', this.get_item_file_path(filename))) {
+        spawn_sync('rm', this.get_item_info_path(filename));
+      }
     }
 
     openConfirmDialog(title, message, ok_label, dont_ask, callback) {
@@ -296,6 +336,40 @@ const trashMenu = GObject.registerClass(
         callback();
       } else {
         new confirmDialog(title, message, ok_label, dont_ask, callback).open();
+      }
+    }
+
+    get_item_file_path(file_name) {
+      return this.trash_files + file_name;
+    }
+
+    get_item_info_path(info_file) {
+      return this.trash_info + info_file + ".trashinfo";
+    }
+
+    parse_info_file(file_name) {
+      let info_file = this.get_item_info_path(file_name);
+      log("Trying to parse " + info_file);
+      try {
+        let [ok, info] = GLib.file_get_contents(info_file);
+        if (!ok) {
+          throw ("Unable to get contents of + " + info_file);
+        }
+
+        let lines = ByteArray.toString(info).split('\n');
+        if (lines[0] != '[Trash Info]') {
+          throw ("Invalid trash info at + " + info_file);
+        }
+
+        let path = lines[1].split('=');
+        let date = lines[2].split('=');
+        let out = {};
+        out[path[0]] = unescape(path[1]);
+        out[date[0]] = unescape(date[1]);
+
+        return out;
+      } catch (e) {
+        return { 'err': "Unable o parse trash info: " + e };
       }
     }
   }
@@ -340,7 +414,7 @@ const confirmDialog = GObject.registerClass(
       message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });
 
       if (dont_ask.flag == CONFIRM_ASK) {
-        this.dont_ask_checkbox = new CheckBox.CheckBox(_('Don\'t ask until next restart?'));
+        this.dont_ask_checkbox = new CheckBox.CheckBox(_('Don\'t ask until next login.'));
         message_box.add(this.dont_ask_checkbox, { y_fill: true, y_align: St.Align.START });
       }
 
@@ -366,6 +440,7 @@ const confirmDialog = GObject.registerClass(
     }
   }
 );
+
 
 function init(extensionMeta) {
   imports.gettext.bindtextdomain("gnome-trash", extensionMeta.path + "/locale");
