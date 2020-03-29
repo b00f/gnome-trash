@@ -31,16 +31,16 @@ function spawn_sync(...args) {
   try {
     let flags = GLib.SpawnFlags.SEARCH_PATH;
     let [_success, _out, err, _errno] = GLib.spawn_sync(null, args, null, flags, null);
-    if (err != "") {
-      Main.notifyError(_("Operation failed"), _("Cause: %s").format(err));
+    // Clear warning: Some code called array.toString() on a Uint8Array instance. Previously this would have interpreted ....
+    let err_string = ByteArray.toString(err);
+    if (err_string != "") {
+      Main.notifyError(_("Operation failed"), _("Cause: %s").format(err_string));
       return false;
     }
 
     return true;
-  } catch (err) {
-    Main.notifyError(_("Operation failed"), _("Cause: %s").format(err.message));
-
-    throw err;
+  } catch (e) {
+    Main.notifyError(_("Operation failed"), _("Cause: %s").format(e.message));
   }
 }
 
@@ -241,7 +241,7 @@ const trashMenu = GObject.registerClass(
         // restore button
         let icon_restore = new St.Icon({
           icon_name: "edit-undo-symbolic",
-          style_class: 'system-status-icon'
+          style_class: 'popup-menu-icon'
         });
 
         let icon_restore_btn = new St.Button({
@@ -264,7 +264,7 @@ const trashMenu = GObject.registerClass(
         // delete button
         let icon_delete = new St.Icon({
           icon_name: "edit-delete-symbolic",
-          style_class: 'system-status-icon'
+          style_class: 'popup-menu-icon'
         });
 
         let icon_delete_btn = new St.Button({
@@ -343,7 +343,7 @@ const trashMenu = GObject.registerClass(
         Main.notifyError(_("Operation failed"), _("Refusing to overwrite existing file."));
       } else {
         // Create parent directories if they are not exist
-        let parent_dir = path.substring( 0, path.lastIndexOf( "/" ) + 1);
+        let parent_dir = path.substring(0, path.lastIndexOf("/") + 1);
         spawn_sync("mkdir", "-p", parent_dir);
 
         if (spawn_sync("mv", this.get_item_file_path(file_name), path)) {
@@ -445,8 +445,12 @@ const confirmDialog = GObject.registerClass(
       message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });
 
       if (dont_ask.flag == CONFIRM_ASK) {
-        this.dont_ask_checkbox = new CheckBox.CheckBox(_('Don\'t ask until next login.'));
-        message_box.add(this.dont_ask_checkbox, { y_fill: true, y_align: St.Align.START });
+        try {
+          this.dont_ask_checkbox = new CheckBox.CheckBox(_('Don\'t ask until next login.'));
+          message_box.add_actor(this.dont_ask_checkbox);
+        } catch (e) {
+          // Do nothing.
+        }
       }
 
       this.setButtons([
@@ -461,7 +465,7 @@ const confirmDialog = GObject.registerClass(
           label: ok_label,
           action: () => {
             if (this.dont_ask_checkbox) {
-              dont_ask.flag = (this.dont_ask_checkbox.actor.checked) ? CONFIRM_DONT_ASK : CONFIRM_ASK;
+              dont_ask.flag = (this.dont_ask_checkbox.checked) ? CONFIRM_DONT_ASK : CONFIRM_ASK;
             }
             this.close();
             callback();
