@@ -4,7 +4,6 @@ const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const CheckBox = imports.ui.checkBox;
 const ModalDialog = imports.ui.modalDialog;
-const Dialog = imports.ui.dialog;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
@@ -124,7 +123,7 @@ const trashMenu = GObject.registerClass(
         hint_text: _('Type here to search...'),
         track_hover: true
       });
-      item.actor.add(this.search_item, { expand: true });
+      item.actor.add(this.search_item);
 
 
       this.search_item.get_clutter_text().connect(
@@ -201,7 +200,7 @@ const trashMenu = GObject.registerClass(
 
     onTrashChange() {
       this.clearMenu();
-      if (this.listItems() == 0) {
+      if (this.listTrashItems() == 0) {
         this.visible = false;
       } else {
         this.show();
@@ -210,7 +209,7 @@ const trashMenu = GObject.registerClass(
       this.onSearchItemChanged();
     }
 
-    listItems() {
+    listTrashItems() {
       let trash_item = function (that, file_info) {
         let item = new PopupMenu.PopupBaseMenuItem();
 
@@ -362,7 +361,7 @@ const trashMenu = GObject.registerClass(
 
     doDeleteItem(filename) {
       if (spawn_sync('rm', '-rf', this.get_item_file_path(filename))) {
-        spawn_sync('rm', this.get_item_info_path(filename));
+        spawn_sync('rm', '-f', this.get_item_info_path(filename));
       }
     }
 
@@ -485,7 +484,7 @@ let _indicator;
 
 function enable() {
   _indicator = new trashMenu;
-  Main.panel.addToStatusArea('trash_button', _indicator);
+  Main.panel.addToStatusArea('gnome_trash_button', _indicator);
 }
 
 function disable() {
