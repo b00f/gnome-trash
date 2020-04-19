@@ -3,6 +3,7 @@ const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const CheckBox = imports.ui.checkBox;
+const Mainloop = imports.mainloop;
 const ModalDialog = imports.ui.modalDialog;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
@@ -105,40 +106,50 @@ const trashMenu = GObject.registerClass(
     }
 
     addSearchBox() {
-      // TODO: add 'x' xlear button inside the search box
+      // TODO: add 'x' clear button inside the search box
       // --------------------------------------------------
       // |                                              X |
       // --------------------------------------------------
-      let item = new PopupMenu.PopupBaseMenuItem({
-        reactive: false,
-        can_focus: true,
-        style_class: 'gt-search-box',
-      });
 
       // Search box
-      this.search_item = new St.Entry({
+      this.search_entry = new St.Entry({
         name: 'searchItem',
         style_class: 'gt-search-box',
         can_focus: true,
         hint_text: _('Type here to search...'),
         track_hover: true
       });
-      item.actor.add(this.search_item);
 
-
-      this.search_item.get_clutter_text().connect(
+      this.search_entry.get_clutter_text().connect(
         'text-changed',
         this.onSearchItemChanged.bind(this)
       );
 
+      // search item
+      let item = new PopupMenu.PopupBaseMenuItem({
+        reactive: false,
+        can_focus: true,
+        style_class: 'gt-search-box-item',
+      });
+
+      item.actor.add(this.search_entry, { expand: true });
       this.menu.addMenuItem(item, { expand: true });
 
+      // add separator
       let separator = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator);
 
       // Clear search when re-open the menu
       this.menu.connect('open-state-changed', function (self, open) {
-        this.search_item.set_text('');
+        if (open) {
+          let that = this;
+          let t = Mainloop.timeout_add(50, function () {
+            that.search_entry.set_text('');
+            global.stage.set_key_focus(that.search_entry);
+            Mainloop.source_remove(t);
+          });
+        }
+
       }.bind(this));
     }
 
@@ -173,7 +184,7 @@ const trashMenu = GObject.registerClass(
     }
 
     onSearchItemChanged() {
-      let query = this.search_item.get_text().toLowerCase();
+      let query = this.search_entry.get_text().toLowerCase();
 
       if (query === '') {
         this.trash_scrollable_menu.getAllItems().forEach(function (item) {

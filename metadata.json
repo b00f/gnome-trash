@@ -3,7 +3,7 @@
     "3.34",
     "3.36"
   ],
-  "version": 4,
+  "version": 6,
   "uuid": "gnome-trash@gnome-trash.b00f.gitlab.com",
   "name": "Gnome Trash",
   "description": "A gnome shell extension to manage your trash. You can manage trash items from the panel and open or empty the trash.\nIt hides completely when the trash is empty, and lists the files in the trash bin in the panel menu.",
