@@ -365,8 +365,8 @@ const gnomeTrashMenu = GObject.registerClass(
 
     deleteItem(file_name) {
       const title = _("Delete item permanently");
-      let message = _("Are you sure you want to delete %s?\n\
-      This operation cannot be undone.".format(file_name));
+      let message = _("Are you sure you want to delete '%s'?\n\
+      This operation cannot be undone.").format(file_name);
 
       this.openConfirmDialog(title, message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
     }

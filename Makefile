@@ -20,8 +20,7 @@ test: install
 	@dbus-run-session -- gnome-shell --nested --wayland
 
 update-transaltions:
-	@xgettext -L Python --from-code=UTF-8 -k_ -kN_ -o $(POT_FILE) *.js --package-name "gnome-trash"
+	@xgettext -L JavaScript --no-location --from-code=UTF-8 -k_ -kN_ -o $(POT_FILE) *.js --package-name "gnome-trash"
 	@for f in ./po/*.po ; do \
-		msgmerge $$f $(POT_FILE) -o $$f ;\
+		msgmerge --no-location -N $$f $(POT_FILE) -o $$f ;\
 	done
-
