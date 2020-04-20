@@ -1,0 +1,113 @@
+# Persian translations for gnome-trash package.
+# Copyright (C) 2020 THE gnome-trash'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-trash package.
+#  <mostafa@archlinux>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-trash\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-20 20:17+0800\n"
+"PO-Revision-Date: 2020-04-20 11:37+0800\n"
+"Last-Translator:  <mostafa.sedaghat@gmail.com>\n"
+"Language-Team: Persian <translation-team-fa@lists.sourceforge.net>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:25 extension.js:38 extension.js:44 extension.js:354
+msgid "Operation failed"
+msgstr "عملیات ناموفق"
+
+#: extension.js:25 extension.js:38 extension.js:44
+#, python-format
+msgid "Cause: %s"
+msgstr "بخاطر: %s"
+
+#: extension.js:82
+msgid "Trash"
+msgstr "زباله‌دان"
+
+#: extension.js:94
+msgid "Gnome-trash failed to start"
+msgstr "زباله‌دان گنوم موفق به اجرا نشد"
+
+#: extension.js:94
+msgid "No trash folder is detected."
+msgstr "هیچ زباله‌دانی یافت نشد"
+
+#: extension.js:120
+msgid "Type here to search..."
+msgstr "برای جستجو اینجا تایپ کنید..."
+
+#: extension.js:178
+msgid "Empty Trash"
+msgstr "خالی کردن زباله‌دان "
+
+#: extension.js:182
+msgid "Open Trash"
+msgstr "باز کردن زباله‌دان"
+
+#: extension.js:323
+msgid "Empty Trash?"
+msgstr "خالی کردن زباله‌دان؟"
+
+#: extension.js:324
+msgid ""
+"Are you sure you want to delete all items from the trash?\n"
+"          This operation cannot be undone."
+msgstr ""
+"مطمئنید می‌خواهید همه آیتمهای زباله‌دان را حذف کنید؟\n"
+"این عملیات برگشت پذیر نیست."
+
+#: extension.js:327
+msgid "Empty"
+msgstr "خالی کردن"
+
+#: extension.js:340
+msgid "Restore item?"
+msgstr "بازیابی آیتم؟"
+
+#: extension.js:345
+#, fuzzy, python-format
+msgid "Restore %s to:"
+msgstr "بازیابی آیتم %s به"
+
+#: extension.js:345
+#, fuzzy
+msgid "Deleted at: "
+msgstr "حذف شده در: "
+
+#: extension.js:347
+msgid "Restore"
+msgstr "بازیابی"
+
+#: extension.js:354
+msgid "Refusing to overwrite existing file."
+msgstr "فایل مقصد موجود می‌باشد"
+
+#: extension.js:367
+msgid "Delete item permanently"
+msgstr "حذف آیتم برای همیشه"
+
+#: extension.js:368
+#, python-format
+msgid ""
+"Are you sure you want to delete %s?\n"
+"      This operation cannot be undone."
+msgstr ""
+"مطمئنید می‌خواهید %s حذف کنید؟\n"
+"این عملیات برگشت پذیر نیست."
+
+#: extension.js:371
+msgid "Delete"
+msgstr "حذف"
+
+#: extension.js:460
+msgid "Don't ask until next login."
+msgstr "تا لاگین بعدی نپرس"
+
+#: extension.js:469
+msgid "Cancel"
+msgstr "لغو"

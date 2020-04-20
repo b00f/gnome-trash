@@ -11,6 +11,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Clutter = imports.gi.Clutter;
 const ByteArray = imports.byteArray;
+const ExtensionUtils = imports.misc.extensionUtils;
 
 const Gettext = imports.gettext.domain("gnome-trash");
 const _ = Gettext.gettext;
@@ -74,8 +75,8 @@ const ScrollableMenu = class ScrollableMenu
 };
 
 
-const trashMenu = GObject.registerClass(
-  class trashMenu extends PanelMenu.Button {
+const gnomeTrashMenu = GObject.registerClass(
+  class gnomeTrashMenu extends PanelMenu.Button {
     _init() {
 
       super._init(0.0, _("Trash"));
@@ -341,7 +342,7 @@ const trashMenu = GObject.registerClass(
       if (info.err) {
         message = "Error: " + info.err;
       } else {
-        message = _("Restore '" + file_name + "' to:\n" + info.Path + "?\nDeleted at: " + info.DeletionDate);
+        message = _("Restore '%s' to:").format(file_name) + "\n" + info.Path + "\n" + _("Deleted at: ") + info.DeletionDate;
       }
       this.openConfirmDialog(title, message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
     }
@@ -364,8 +365,8 @@ const trashMenu = GObject.registerClass(
 
     deleteItem(file_name) {
       const title = _("Delete item permanently");
-      let message = _("Are you sure you want to delete '" + file_name + "'?\n\
-      This operation cannot be undone.");
+      let message = _("Are you sure you want to delete %s?\n\
+      This operation cannot be undone.".format(file_name));
 
       this.openConfirmDialog(title, message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
     }
@@ -487,17 +488,16 @@ const confirmDialog = GObject.registerClass(
 );
 
 
-function init(extensionMeta) {
-  imports.gettext.bindtextdomain("gnome-trash", extensionMeta.path + "/locale");
+function init() {
+  ExtensionUtils.initTranslations();
 }
 
-let _indicator;
-
+let _gnomeTrash;
 function enable() {
-  _indicator = new trashMenu;
-  Main.panel.addToStatusArea('gnome_trash_button', _indicator);
+  _gnomeTrash = new gnomeTrashMenu;
+  Main.panel.addToStatusArea('gnome_trash_button', _gnomeTrash);
 }
 
 function disable() {
-  _indicator.destroy();
+  _gnomeTrash.destroy();
 }

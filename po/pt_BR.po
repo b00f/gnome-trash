@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trash Gnome-Shell extension\n"
+"Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-08 22:17+0200\n"
+"POT-Creation-Date: 2020-04-20 20:17+0800\n"
 "PO-Revision-Date: 2013-05-23 00:18+0100\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: Brazilian Portuguese <renato.cferreira@hotmail.com>\n"
@@ -19,30 +19,99 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: ../extension.js:68
+#: extension.js:25 extension.js:38 extension.js:44 extension.js:354
+msgid "Operation failed"
+msgstr ""
+
+#: extension.js:25 extension.js:38 extension.js:44
+#, python-format
+msgid "Cause: %s"
+msgstr ""
+
+#: extension.js:82
+#, fuzzy
+msgid "Trash"
+msgstr "Abrir Lixeira"
+
+#: extension.js:94
+msgid "Gnome-trash failed to start"
+msgstr ""
+
+#: extension.js:94
+msgid "No trash folder is detected."
+msgstr ""
+
+#: extension.js:120
+msgid "Type here to search..."
+msgstr ""
+
+#: extension.js:178
 msgid "Empty Trash"
 msgstr "Lixeira vazia"
 
-#: ../extension.js:73
+#: extension.js:182
 msgid "Open Trash"
 msgstr "Abrir Lixeira"
 
-#: ../extension.js:141
+#: extension.js:323
+msgid "Empty Trash?"
+msgstr "Esvaziar Lixeira?"
+
+#: extension.js:324
+#, fuzzy
 msgid ""
 "Are you sure you want to delete all items from the trash?\n"
-"This operation cannot be undone."
+"          This operation cannot be undone."
 msgstr ""
 "Você realmente deseja deletar todos os itens da Lixeira?\n"
 "Esta operação não pode ser desfeita."
 
-#: ../extension.js:163
-msgid "Empty Trash?"
-msgstr "Esvaziar Lixeira?"
-
-#: ../extension.js:174
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: ../extension.js:181
+#: extension.js:327
 msgid "Empty"
 msgstr "Vazia"
+
+#: extension.js:340
+msgid "Restore item?"
+msgstr ""
+
+#: extension.js:345
+#, python-format
+msgid "Restore %s to:"
+msgstr ""
+
+#: extension.js:345
+msgid "Deleted at: "
+msgstr ""
+
+#: extension.js:347
+msgid "Restore"
+msgstr ""
+
+#: extension.js:354
+msgid "Refusing to overwrite existing file."
+msgstr ""
+
+#: extension.js:367
+msgid "Delete item permanently"
+msgstr ""
+
+#: extension.js:368
+#, fuzzy, python-format
+msgid ""
+"Are you sure you want to delete %s?\n"
+"      This operation cannot be undone."
+msgstr ""
+"Você realmente deseja deletar todos os itens da Lixeira?\n"
+"Esta operação não pode ser desfeita."
+
+#: extension.js:371
+msgid "Delete"
+msgstr ""
+
+#: extension.js:460
+msgid "Don't ask until next login."
+msgstr ""
+
+#: extension.js:469
+msgid "Cancel"
+msgstr "Cancelar"
