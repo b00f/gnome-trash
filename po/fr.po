@@ -72,7 +72,7 @@ msgid "Delete item permanently"
 msgstr "Supprimer l'élément de façon permanente"
 
 msgid ""
-"Are you sure you want to delete %s?\n"
+"Are you sure you want to delete '%s'?\n"
 "      This operation cannot be undone."
 msgstr ""
 "Êtes-vous sur de vouloir supprimer '%s' ?\n"

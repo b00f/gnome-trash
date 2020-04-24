@@ -8,7 +8,15 @@ POT_FILE = ./po/$(EXT_NAME).pot
 all: pack
 
 pack:
-	@gnome-extensions pack --force --extra-source=README.md --extra-source=LICENSE
+	@gnome-extensions pack --force --gettext-domain $(EXT_NAME) \
+		--extra-source=actionBar.js \
+		--extra-source=searchBox.js \
+		--extra-source=scrollMenu.js \
+		--extra-source=confirmDialog.js \
+		--extra-source=utils.js \
+		--extra-source=README.md \
+		--extra-source=LICENSE
+
 	@echo extension packed!
 
 install: pack
@@ -20,8 +28,7 @@ test: install
 	@dbus-run-session -- gnome-shell --nested --wayland
 
 update-transaltions:
-	@xgettext -L Python --from-code=UTF-8 -k_ -kN_ -o $(POT_FILE) *.js --package-name "gnome-trash"
+	@xgettext -L JavaScript --no-location --from-code=UTF-8 -k_ -kN_ -o $(POT_FILE) *.js --package-name "gnome-trash"
 	@for f in ./po/*.po ; do \
-		msgmerge $$f $(POT_FILE) -o $$f ;\
+		msgmerge --no-location -N $$f $(POT_FILE) -o $$f ;\
 	done
-

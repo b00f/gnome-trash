@@ -1,5 +1,5 @@
-.modal-dialog {
-    min-width:400px;
+.gt-modal-dialog {
+    min-width: 400px;
 }
 
 .gt-scroll-view {
@@ -7,5 +7,15 @@
     width: 360px;
 }
 
-.gt-search-box {
+.gt-search-box {}
+
+.gt-action-btn {}
+
+.action-box {
+    padding: 0px;
+    margin: 0px;
 }
+
+.gt-action-box {}
+
+.gt-action-box-layout {}

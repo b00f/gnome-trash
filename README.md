@@ -1,5 +1,4 @@
-gnome-trash
-===========================
+# Gnome Trash
 
 A gnome shell extension to manage your trash.
 
@@ -28,7 +27,7 @@ It automatically installs the extension and runs a nested gnome-shell.
 If you are going to help me make this extension better, you are welcome!
 To start, check the code; there are some `TODO` comments. You might be interested to work on them.
 
-You can also [add new translation](https://wiki.gnome.org/Projects/GnomeShell/Extensions/Writing#Extension_Translations). Simply you can add add new translation by this command:
+You can also [add new translation](https://wiki.gnome.org/Projects/GnomeShell/Extensions/Writing#Extension_Translations) by this command:
 `msginit -i ./po/gnome-trash.pot -l <YOUR-LANG-ID>`.
 
 
