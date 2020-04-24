@@ -3,9 +3,15 @@
 }
 
 .gt-scroll-view {
-    height: 500px;
+    height: 600px;
     width: 360px;
 }
 
-.gt-search-box {
+.gt-search-box {}
+
+.gt-action-btn {}
+
+.action-box {
+    padding: 0px;
+    margin: 0px;
 }

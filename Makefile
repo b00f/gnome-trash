@@ -8,7 +8,15 @@ POT_FILE = ./po/$(EXT_NAME).pot
 all: pack
 
 pack:
-	@gnome-extensions pack --force --extra-source=README.md --extra-source=LICENSE
+	@gnome-extensions pack --force --gettext-domain $(EXT_NAME) \
+		--extra-source=actionBar.js \
+		--extra-source=searchBox.js \
+		--extra-source=scrollMenu.js \
+		--extra-source=confirmDialog.js \
+		--extra-source=utils.js \
+		--extra-source=README.md \
+		--extra-source=LICENSE
+
 	@echo extension packed!
 
 install: pack
