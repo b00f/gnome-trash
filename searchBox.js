@@ -5,13 +5,17 @@ const GObject = imports.gi.GObject;
 
 var SearchBox = GObject.registerClass(class SearchBox extends PopupMenu.PopupBaseMenuItem {
   _init() {
-    super._init()
+    super._init({
+      reactive: false,
+      can_focus: true,
+    })
 
     // TODO: add 'x' clear button inside the search box
     // --------------------------------------------------
     // |                                              X |
     // --------------------------------------------------
     this.search_entry = new St.Entry({
+      name: 'searchItem',
       style_class: 'gt-search-box',
       can_focus: true,
       hint_text: _('Type here to search...'),
