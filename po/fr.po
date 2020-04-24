@@ -14,44 +14,33 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "POT-Creation-Date: \n"
 
-#: extension.js:25 extension.js:38 extension.js:44 extension.js:354
 msgid "Operation failed"
 msgstr "L'opération a échoué"
 
-#: extension.js:25 extension.js:38 extension.js:44
-#, python-format
 msgid "Cause: %s"
 msgstr "Cause : %s"
 
-#: extension.js:82
 msgid "Trash"
 msgstr "Corbeille"
 
-#: extension.js:94
 msgid "Gnome-trash failed to start"
 msgstr "Gnome-trash a échoué à démarrer"
 
-#: extension.js:94
 msgid "No trash folder is detected."
 msgstr "Aucun répertoire corbeille n'est détecté."
 
-#: extension.js:120
 msgid "Type here to search..."
 msgstr "Saisir ici votre recherche..."
 
-#: extension.js:178
 msgid "Empty Trash"
 msgstr "Vider la corbeille"
 
-#: extension.js:182
 msgid "Open Trash"
 msgstr "Ouvrir la corbeille"
 
-#: extension.js:323
 msgid "Empty Trash?"
 msgstr "Vider la corbeille ?"
 
-#: extension.js:324
 msgid ""
 "Are you sure you want to delete all items from the trash?\n"
 "          This operation cannot be undone."
@@ -61,37 +50,27 @@ msgstr ""
 "\n"
 "Cette opération ne peut être annulée."
 
-#: extension.js:327
 msgid "Empty"
 msgstr "Vider"
 
-#: extension.js:340
 msgid "Restore item?"
 msgstr "Restaurer l'élément ?"
 
-#: extension.js:345
-#, python-format
 msgid "Restore %s to:"
 msgstr "Restaurer '%s' vers :"
 
-#: extension.js:345
 msgid "Deleted at: "
 msgstr "Supprimé à : "
 
-#: extension.js:347
 msgid "Restore"
 msgstr "Restaurer"
 
-#: extension.js:354
 msgid "Refusing to overwrite existing file."
 msgstr "Refuser d'écraser un fichier existant."
 
-#: extension.js:367
 msgid "Delete item permanently"
 msgstr "Supprimer l'élément de façon permanente"
 
-#: extension.js:368
-#, python-format
 msgid ""
 "Are you sure you want to delete %s?\n"
 "      This operation cannot be undone."
@@ -100,14 +79,11 @@ msgstr ""
 "\n"
 "Cette opération ne peut être annulée."
 
-#: extension.js:371
 msgid "Delete"
 msgstr "Supprimer"
 
-#: extension.js:460
 msgid "Don't ask until next login."
 msgstr "Ne pas redemander jusqu'à la prochaine connexion."
 
-#: extension.js:469
 msgid "Cancel"
 msgstr "Annuler"
