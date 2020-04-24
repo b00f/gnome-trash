@@ -14,15 +14,15 @@ var ActionBar = GObject.registerClass(class ActionBar extends PopupMenu.PopupBas
     super._init({
       activate: false,
       hover: false,
-      style_class: 'action-box',
+      style_class: 'gt-action-box',
     })
 
     this.actionsBox = new St.BoxLayout({
       vertical: false,
-      style_class: 'action-box-layout',
+      style_class: 'gt-action-box-layout',
     });
 
-    let open_item = new PopupMenu.PopupBaseMenuItem();
+    let open_btn = new PopupMenu.PopupBaseMenuItem();
 
     // Open trash button
     let open_icon = new St.Icon({
@@ -32,30 +32,30 @@ var ActionBar = GObject.registerClass(class ActionBar extends PopupMenu.PopupBas
 
     let open_label = new St.Label({ text: _("Open Trash") });
 
-    open_item.add_child(open_icon);
-    open_item.add_child(open_label);
-    open_item.connect('activate', () => {
+    open_btn.add_child(open_icon);
+    open_btn.add_child(open_label);
+    open_btn.connect('activate', () => {
       this.onOpenTrash();
     });
-    this.actionsBox.add(open_item, { expand: true });
+    this.actionsBox.add(open_btn, { expand: true });
 
 
-    let empty_item = new PopupMenu.PopupBaseMenuItem();
+    let empty_btn = new PopupMenu.PopupBaseMenuItem();
 
     // Open trash button
     let empty_icon = new St.Icon({
       icon_name: "edit-delete-symbolic",
-      style_class: 'popup-menu-icon'
+      style_class: 'popup-menu-icon',
     });
 
     let empty_label = new St.Label({ text: _("Empty Trash") });
 
-    empty_item.add_child(empty_label);
-    empty_item.add_child(empty_icon);
-    empty_item.connect('activate', () => {
+    empty_btn.add_child(empty_label);
+    empty_btn.add_child(empty_icon);
+    empty_btn.connect('activate', () => {
       this.onEmptyTrash();
     });
-    this.actionsBox.add(empty_item, { expand: true });
+    this.actionsBox.add(empty_btn, { expand: true });
 
     this.actor.add(this.actionsBox);
   }

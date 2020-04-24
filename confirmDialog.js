@@ -25,7 +25,8 @@ const ConfirmDialog = GObject.registerClass(
       super._init();
 
       let main_box = new St.BoxLayout({
-        vertical: false
+        vertical: false,
+        style_class: 'gt-modal-dialog',
       });
       this.contentLayout.add(main_box, { x_fill: true, y_fill: true });
 

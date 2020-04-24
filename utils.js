@@ -2,6 +2,42 @@ const GLib = imports.gi.GLib;
 const ByteArray = imports.byteArray;
 
 
+function log_methods(obj) {
+  var result = [];
+  for (var id in obj) {
+    try {
+      if (typeof (obj[id]) == "function") {
+        result.push(id + ": " + obj[id].toString());
+      }
+    } catch (err) {
+      result.push(id + ": inaccessible");
+    }
+  }
+
+  log(result);
+}
+
+// https://stackoverflow.com/questions/9382167/serializing-object-that-contains-cyclic-object-value
+function decycle(obj, stack = []) {
+  if (!obj || typeof obj !== 'object')
+    return obj;
+
+  if (stack.includes(obj))
+    return null;
+
+  let s = stack.concat([obj]);
+
+  return Array.isArray(obj)
+    ? obj.map(x => decycle(x, s))
+    : Object.fromEntries(
+      Object.entries(obj)
+        .map(([k, v]) => [k, decycle(v, s)]));
+}
+
+function log_object(obj) {
+  json = JSON.stringify(decycle(obj), null, 1);
+  log(json);
+}
 
 function spawn_async(...args) {
   try {
