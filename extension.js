@@ -220,12 +220,14 @@ const gnomeTrashMenu = GObject.registerClass(
       let info = this.parseTrashInfo(file_name);
       const title = _("Restore item?");
       let message = "";
+      let sub_message = "";
       if (info.err) {
         message = "Error: " + info.err;
       } else {
-        message = _("Restore '%s' to:").format(file_name) + "\n" + info.Path + "\n" + _("Deleted at: ") + info.DeletionDate;
+        message = _("Restore '%s' to:").format(file_name) + "\n  " + info.Path;
+        sub_message = _("Deleted at: ") + info.DeletionDate;
       }
-      ConfirmDialog.openConfirmDialog(title, message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
     }
 
     doRestoreItem(file_name, path) {
@@ -246,10 +248,10 @@ const gnomeTrashMenu = GObject.registerClass(
 
     deleteItem(file_name) {
       const title = _("Delete item permanently");
-      let message = _("Are you sure you want to delete '%s'?\n\
-      This operation cannot be undone.").format(file_name);
+      let message = _("Are you sure you want to delete '%s'?").format(file_name);
+      let sub_message = _("This operation cannot be undone.");
 
-      ConfirmDialog.openConfirmDialog(title, message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
     }
 
     doDeleteItem(filename) {

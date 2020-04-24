@@ -2,26 +2,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash-translations-fr\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-25 00:10+0800\n"
 "PO-Revision-Date: 2020-04-22 19:17+0200\n"
+"Last-Translator: galen1423 <>\n"
+"Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Last-Translator: galen1423 <>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"POT-Creation-Date: \n"
 
-msgid "Operation failed"
-msgstr "L'opération a échoué"
+#, javascript-format
+msgid "Are you sure you want to delete '%s'?"
+msgstr "Êtes-vous sur de vouloir supprimer '%s' ?"
 
+msgid "Are you sure you want to delete all items from the trash?"
+msgstr "Êtes-vous sur de vouloir supprimer tout le contenu de la corbeille ?"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+#, javascript-format
 msgid "Cause: %s"
 msgstr "Cause : %s"
 
-msgid "Trash"
-msgstr "Corbeille"
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Delete item permanently"
+msgstr "Supprimer l'élément de façon permanente"
+
+msgid "Deleted at: "
+msgstr "Supprimé à : "
+
+msgid "Don't ask until next login."
+msgstr "Ne pas redemander jusqu'à la prochaine connexion."
+
+msgid "Empty"
+msgstr "Vider"
+
+msgid "Empty Trash"
+msgstr "Vider la corbeille"
+
+msgid "Empty Trash?"
+msgstr "Vider la corbeille ?"
 
 msgid "Gnome-trash failed to start"
 msgstr "Gnome-trash a échoué à démarrer"
@@ -29,61 +55,30 @@ msgstr "Gnome-trash a échoué à démarrer"
 msgid "No trash folder is detected."
 msgstr "Aucun répertoire corbeille n'est détecté."
 
-msgid "Type here to search..."
-msgstr "Saisir ici votre recherche..."
-
-msgid "Empty Trash"
-msgstr "Vider la corbeille"
-
 msgid "Open Trash"
 msgstr "Ouvrir la corbeille"
 
-msgid "Empty Trash?"
-msgstr "Vider la corbeille ?"
-
-msgid ""
-"Are you sure you want to delete all items from the trash?\n"
-"          This operation cannot be undone."
-msgstr ""
-"Êtes-vous sur de vouloir supprimer tout\n"
-"le contenu de la corbeille ?\n"
-"\n"
-"Cette opération ne peut être annulée."
-
-msgid "Empty"
-msgstr "Vider"
-
-msgid "Restore item?"
-msgstr "Restaurer l'élément ?"
-
-msgid "Restore %s to:"
-msgstr "Restaurer '%s' vers :"
-
-msgid "Deleted at: "
-msgstr "Supprimé à : "
-
-msgid "Restore"
-msgstr "Restaurer"
+msgid "Operation failed"
+msgstr "L'opération a échoué"
 
 msgid "Refusing to overwrite existing file."
 msgstr "Refuser d'écraser un fichier existant."
 
-msgid "Delete item permanently"
-msgstr "Supprimer l'élément de façon permanente"
+msgid "Restore"
+msgstr "Restaurer"
 
-msgid ""
-"Are you sure you want to delete '%s'?\n"
-"      This operation cannot be undone."
-msgstr ""
-"Êtes-vous sur de vouloir supprimer '%s' ?\n"
-"\n"
-"Cette opération ne peut être annulée."
+#, javascript-format
+msgid "Restore '%s' to:"
+msgstr "Restaurer '%s' vers:"
 
-msgid "Delete"
-msgstr "Supprimer"
+msgid "Restore item?"
+msgstr "Restaurer l'élément ?"
 
-msgid "Don't ask until next login."
-msgstr "Ne pas redemander jusqu'à la prochaine connexion."
+msgid "This operation cannot be undone."
+msgstr "Cette opération ne peut être annulée."
 
-msgid "Cancel"
-msgstr "Annuler"
+msgid "Trash"
+msgstr "Corbeille"
+
+msgid "Type here to search..."
+msgstr "Saisir ici votre recherche..."

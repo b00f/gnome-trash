@@ -1,6 +1,8 @@
 const GLib = imports.gi.GLib;
 const ByteArray = imports.byteArray;
 
+const Gettext = imports.gettext.domain("gnome-trash");
+const _ = Gettext.gettext;
 
 function log_methods(obj) {
   var result = [];

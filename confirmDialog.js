@@ -4,24 +4,26 @@ const ModalDialog = imports.ui.modalDialog;
 const CheckBox = imports.ui.checkBox;
 const Clutter = imports.gi.Clutter;
 
+const Gettext = imports.gettext.domain("gnome-trash");
+const _ = Gettext.gettext;
 
 const CONFIRM_ALWAYS_ASK = 0;
 const CONFIRM_DONT_ASK = 1;
 const CONFIRM_ASK = 2;
 
 
-function openConfirmDialog(title, message, ok_label, dont_ask, callback) {
+function openConfirmDialog(title, message, sub_message, ok_label, dont_ask, callback) {
   if (dont_ask.flag == ConfirmDialog.CONFIRM_DONT_ASK) {
     callback();
   } else {
-    new ConfirmDialog(title, message, ok_label, dont_ask, callback).open();
+    new ConfirmDialog(title, message + "\n" + sub_message, ok_label, dont_ask, callback).open();
   }
 }
 
 const ConfirmDialog = GObject.registerClass(
   class ConfirmDialog extends ModalDialog.ModalDialog {
 
-    _init(title, message, ok_label, dont_ask, callback) {
+    _init(title, desc, ok_label, dont_ask, callback) {
       super._init();
 
       let main_box = new St.BoxLayout({
@@ -44,7 +46,7 @@ const ConfirmDialog = GObject.registerClass(
 
       let desc_label = new St.Label({
         style: 'padding-top: 10px; padding-bottom: 20px;',
-        text: _(message)
+        text: desc
       });
 
       message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });

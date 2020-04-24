@@ -2,6 +2,9 @@ const St = imports.gi.St;
 const PopupMenu = imports.ui.popupMenu;
 const Gtk = imports.gi.Gtk;
 
+const Gettext = imports.gettext.domain("gnome-trash");
+const _ = Gettext.gettext;
+
 
 const ScrollMenu = class ScrollMenu
   extends PopupMenu.PopupMenuSection {

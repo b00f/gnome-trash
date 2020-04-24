@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-20 21:10+0800\n"
+"POT-Creation-Date: 2020-04-25 00:10+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,39 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Operation failed"
+#, javascript-format
+msgid "Are you sure you want to delete '%s'?"
+msgstr ""
+
+msgid "Are you sure you want to delete all items from the trash?"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 #, javascript-format
 msgid "Cause: %s"
 msgstr ""
 
-msgid "Trash"
+msgid "Delete"
+msgstr ""
+
+msgid "Delete item permanently"
+msgstr ""
+
+msgid "Deleted at: "
+msgstr ""
+
+msgid "Don't ask until next login."
+msgstr ""
+
+msgid "Empty"
+msgstr ""
+
+msgid "Empty Trash"
+msgstr ""
+
+msgid "Empty Trash?"
 msgstr ""
 
 msgid "Gnome-trash failed to start"
@@ -33,56 +58,30 @@ msgstr ""
 msgid "No trash folder is detected."
 msgstr ""
 
-msgid "Type here to search..."
-msgstr ""
-
-msgid "Empty Trash"
-msgstr ""
-
 msgid "Open Trash"
 msgstr ""
 
-msgid "Empty Trash?"
+msgid "Operation failed"
 msgstr ""
 
-msgid ""
-"Are you sure you want to delete all items from the trash?\n"
-"          This operation cannot be undone."
+msgid "Refusing to overwrite existing file."
 msgstr ""
 
-msgid "Empty"
-msgstr ""
-
-msgid "Restore item?"
+msgid "Restore"
 msgstr ""
 
 #, javascript-format
 msgid "Restore '%s' to:"
 msgstr ""
 
-msgid "Deleted at: "
+msgid "Restore item?"
 msgstr ""
 
-msgid "Restore"
+msgid "This operation cannot be undone."
 msgstr ""
 
-msgid "Refusing to overwrite existing file."
+msgid "Trash"
 msgstr ""
 
-msgid "Delete item permanently"
-msgstr ""
-
-#, javascript-format
-msgid ""
-"Are you sure you want to delete '%s'?\n"
-"      This operation cannot be undone."
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "Don't ask until next login."
-msgstr ""
-
-msgid "Cancel"
+msgid "Type here to search..."
 msgstr ""

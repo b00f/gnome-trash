@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-20 21:10+0800\n"
+"POT-Creation-Date: 2020-04-25 00:10+0800\n"
 "PO-Revision-Date: 2013-05-23 00:18+0100\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
@@ -19,15 +19,40 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-msgid "Operation failed"
+#, javascript-format
+msgid "Are you sure you want to delete '%s'?"
 msgstr ""
+
+msgid "Are you sure you want to delete all items from the trash?"
+msgstr "Sollen alle Objekte aus dem Papierkorb entfernt werden?"
+
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #, javascript-format
 msgid "Cause: %s"
 msgstr ""
 
-msgid "Trash"
-msgstr "Mülleimer öffnen"
+msgid "Delete"
+msgstr ""
+
+msgid "Delete item permanently"
+msgstr ""
+
+msgid "Deleted at: "
+msgstr ""
+
+msgid "Don't ask until next login."
+msgstr ""
+
+msgid "Empty"
+msgstr "Leeren"
+
+msgid "Empty Trash"
+msgstr "Mülleimer leeren"
+
+msgid "Empty Trash?"
+msgstr "Mülleimer leeren?"
 
 msgid "Gnome-trash failed to start"
 msgstr ""
@@ -35,58 +60,30 @@ msgstr ""
 msgid "No trash folder is detected."
 msgstr ""
 
-msgid "Type here to search..."
-msgstr ""
-
-msgid "Empty Trash"
-msgstr "Mülleimer leeren"
-
 msgid "Open Trash"
 msgstr "Mülleimer öffnen"
 
-msgid "Empty Trash?"
-msgstr "Mülleimer leeren?"
-
-msgid ""
-"Are you sure you want to delete all items from the trash?\n"
-"          This operation cannot be undone."
+msgid "Operation failed"
 msgstr ""
-"Sollen alle Objekte aus dem Papierkorb entfernt werden?\n"
-"Alle Objekte im Papierkorb werden dauerhaft gelöscht."
 
-msgid "Empty"
-msgstr "Leeren"
+msgid "Refusing to overwrite existing file."
+msgstr ""
 
-msgid "Restore item?"
+msgid "Restore"
 msgstr ""
 
 #, javascript-format
 msgid "Restore '%s' to:"
 msgstr ""
 
-msgid "Deleted at: "
+msgid "Restore item?"
 msgstr ""
 
-msgid "Restore"
-msgstr ""
+msgid "This operation cannot be undone."
+msgstr "Alle Objekte im Papierkorb werden dauerhaft gelöscht."
 
-msgid "Refusing to overwrite existing file."
-msgstr ""
+msgid "Trash"
+msgstr "Mülleimer öffnen"
 
-msgid "Delete item permanently"
+msgid "Type here to search..."
 msgstr ""
-
-#, javascript-format
-msgid ""
-"Are you sure you want to delete '%s'?\n"
-"      This operation cannot be undone."
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "Don't ask until next login."
-msgstr ""
-
-msgid "Cancel"
-msgstr "Abbrechen"

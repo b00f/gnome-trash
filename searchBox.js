@@ -2,6 +2,8 @@ const St = imports.gi.St;
 const PopupMenu = imports.ui.popupMenu;
 const GObject = imports.gi.GObject;
 
+const Gettext = imports.gettext.domain("gnome-trash");
+const _ = Gettext.gettext;
 
 var SearchBox = GObject.registerClass(class SearchBox extends PopupMenu.PopupBaseMenuItem {
   _init() {

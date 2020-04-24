@@ -8,6 +8,8 @@ const Me = ExtensionUtils.getCurrentExtension();
 const ConfirmDialog = Me.imports.confirmDialog;
 const Utils = Me.imports.utils;
 
+const Gettext = imports.gettext.domain("gnome-trash");
+const _ = Gettext.gettext;
 
 var ActionBar = GObject.registerClass(class ActionBar extends PopupMenu.PopupBaseMenuItem {
   _init() {
@@ -62,10 +64,10 @@ var ActionBar = GObject.registerClass(class ActionBar extends PopupMenu.PopupBas
 
   onEmptyTrash() {
     const title = _("Empty Trash?");
-    const message = _("Are you sure you want to delete all items from the trash?\n\
-        This operation cannot be undone.");
+    const message = _("Are you sure you want to delete all items from the trash?");
+    const sub_message = _("This operation cannot be undone.");
 
-    ConfirmDialog.openConfirmDialog(title, message, _("Empty"), { flag: ConfirmDialog.CONFIRM_ALWAYS_ASK }, this.doEmptyTrash.bind(this));
+    ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Empty"), { flag: ConfirmDialog.CONFIRM_ALWAYS_ASK }, this.doEmptyTrash.bind(this));
   }
 
   doEmptyTrash() {
