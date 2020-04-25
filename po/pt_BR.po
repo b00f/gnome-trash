@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-25 00:10+0800\n"
+"POT-Creation-Date: 2020-04-25 13:45+0800\n"
 "PO-Revision-Date: 2013-05-23 00:18+0100\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: Brazilian Portuguese <renato.cferreira@hotmail.com>\n"
@@ -53,6 +53,9 @@ msgstr "Lixeira vazia"
 
 msgid "Empty Trash?"
 msgstr "Esvaziar Lixeira?"
+
+msgid "Error"
+msgstr ""
 
 msgid "Gnome-trash failed to start"
 msgstr ""

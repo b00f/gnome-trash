@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-25 00:10+0800\n"
+"POT-Creation-Date: 2020-04-25 13:45+0800\n"
 "PO-Revision-Date: 2020-04-20 11:37+0800\n"
 "Last-Translator:  <mostafa.sedaghat@gmail.com>\n"
 "Language-Team: Persian <translation-team-fa@lists.sourceforge.net>\n"
@@ -50,6 +50,9 @@ msgstr "خالی کردن زباله‌دان "
 
 msgid "Empty Trash?"
 msgstr "خالی کردن زباله‌دان؟"
+
+msgid "Error"
+msgstr "خطا"
 
 msgid "Gnome-trash failed to start"
 msgstr "زباله‌دان گنوم موفق به اجرا نشد"

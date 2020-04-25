@@ -218,15 +218,14 @@ const gnomeTrashMenu = GObject.registerClass(
 
     restoreItem(file_name) {
       let info = this.parseTrashInfo(file_name);
-      const title = _("Restore item?");
-      let message = "";
-      let sub_message = "";
       if (info.err) {
-        message = "Error: " + info.err;
-      } else {
-        message = _("Restore '%s' to:").format(file_name) + "\n  " + info.Path;
-        sub_message = _("Deleted at: ") + info.DeletionDate;
+        Main.notifyError(_("Error"), info.err);
+        return;
       }
+      let title = _("Restore item?");
+      let message = _("Restore '%s' to:").format(file_name) + "\n  " + info.Path;
+      let sub_message = _("Deleted at: ") + info.DeletionDate;
+
       ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
     }
 
@@ -247,7 +246,7 @@ const gnomeTrashMenu = GObject.registerClass(
     }
 
     deleteItem(file_name) {
-      const title = _("Delete item permanently");
+      let title = _("Delete item permanently");
       let message = _("Are you sure you want to delete '%s'?").format(file_name);
       let sub_message = _("This operation cannot be undone.");
 
@@ -274,12 +273,12 @@ const gnomeTrashMenu = GObject.registerClass(
       try {
         let [ok, info] = GLib.file_get_contents(info_file);
         if (!ok) {
-          throw ("Unable to get contents of + " + info_file);
+          throw "Unable to get contents of %s".format(info_file);
         }
 
         let lines = ByteArray.toString(info).split('\n');
         if (lines[0] != '[Trash Info]') {
-          throw ("Invalid trash info at + " + info_file);
+          throw "Invalid trash info at %s".format(info_file);
         }
 
         let path = lines[1].split('=');
@@ -290,7 +289,7 @@ const gnomeTrashMenu = GObject.registerClass(
 
         return out;
       } catch (e) {
-        return { 'err': "Unable o parse trash info: " + e };
+        return { 'err': e.toString() };
       }
     }
   }

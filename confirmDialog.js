@@ -13,7 +13,7 @@ const CONFIRM_ASK = 2;
 
 
 function openConfirmDialog(title, message, sub_message, ok_label, dont_ask, callback) {
-  if (dont_ask.flag == ConfirmDialog.CONFIRM_DONT_ASK) {
+  if (dont_ask.flag == CONFIRM_DONT_ASK) {
     callback();
   } else {
     new ConfirmDialog(title, message + "\n" + sub_message, ok_label, dont_ask, callback).open();

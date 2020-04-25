@@ -37,7 +37,7 @@ function decycle(obj, stack = []) {
 }
 
 function log_object(obj) {
-  json = JSON.stringify(decycle(obj), null, 1);
+  let json = JSON.stringify(decycle(obj), null, 1);
   log(json);
 }
 
