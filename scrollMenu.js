@@ -14,7 +14,8 @@ const ScrollMenu = class ScrollMenu
     // scroll_view
     this.scroll_view = new St.ScrollView({
       overlay_scrollbars: true,
-      style_class: "vfade gt-scroll-view"
+      style_class: "vfade gt-scroll-view",
+      clip_to_allocation: true,
     });
     this.scroll_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
     this.scroll_view_section = new PopupMenu.PopupMenuSection();
