@@ -28,10 +28,10 @@ var SearchBox = GObject.registerClass(class SearchBox extends PopupMenu.PopupBas
 
   }
 
-  onTextChanged(item_changed, that) {
+  onTextChanged(callback) {
     this.search_entry.get_clutter_text().connect(
       'text-changed',
-      item_changed.bind(that)
+      callback
     );
   }
 

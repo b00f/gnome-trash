@@ -3,7 +3,7 @@
     "3.34",
     "3.36"
   ],
-  "version": 6,
+  "version": 7,
   "gettext-domain" : "gnome-trash",
   "uuid": "gnome-trash@gnome-trash.b00f.gitlab.com",
   "name": "Gnome Trash",

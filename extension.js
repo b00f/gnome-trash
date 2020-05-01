@@ -14,6 +14,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const ActionBar = Me.imports.actionBar;
 const ConfirmDialog = Me.imports.confirmDialog;
 const ScrollMenu = Me.imports.scrollMenu;
+const TrashItem = Me.imports.trashItem;
 const SearchBox = Me.imports.searchBox;
 const Utils = Me.imports.utils;
 
@@ -77,10 +78,10 @@ const gnomeTrashMenu = GObject.registerClass(
       this.menu.addMenuItem(separator2);
 
       // Toolbar
-      this.action_bar = new ActionBar.ActionBar();
+      this.action_bar = new ActionBar.ActionBar(this);
       this.menu.addMenuItem(this.action_bar);
 
-      this.search_box.onTextChanged(this.onSearchItemChanged, this);
+      this.search_box.onTextChanged(this.onSearchItemChanged.bind(this));
     }
 
     onSearchItemChanged() {
@@ -121,85 +122,12 @@ const gnomeTrashMenu = GObject.registerClass(
     }
 
     listTrashItems() {
-      let trash_item = function (that, file_info) {
-        let item = new PopupMenu.PopupBaseMenuItem();
-
-
-        let file_name = file_info.get_name();
-        let display_name = file_info.get_display_name();
-        let gicon = file_info.get_symbolic_icon();
-
-        // It uses for searching items
-        item.file_name = file_name;
-
-        // truncate long names
-        if (display_name.length > 32) {
-          display_name = display_name.substr(0, 31) + '...';
-        }
-        let icon = new St.Icon({
-          gicon: gicon,
-          style_class: 'popup-menu-icon'
-        });
-        item.add_child(icon);
-
-        let label = new St.Label({ text: display_name });
-        item.add_child(label);
-        item.connect('activate', () => {
-          that.openTrashItem(file_name);
-        });
-
-        // restore button
-        let icon_restore = new St.Icon({
-          icon_name: "edit-undo-symbolic",
-          style_class: 'popup-menu-icon'
-        });
-
-        let restore_btn = new St.Button({
-          style_class: 'gt-action-btn',
-          child: icon_restore
-        });
-
-        restore_btn.set_x_align(Clutter.ActorAlign.END);
-        restore_btn.set_x_expand(true);
-        restore_btn.set_y_expand(true);
-
-        item.actor.add_child(restore_btn);
-        restore_btn.connect('button-press-event',
-          () => {
-            that.restoreItem(file_name);
-          }
-        );
-
-        // delete button
-        let icon_delete = new St.Icon({
-          icon_name: "edit-delete-symbolic",
-          style_class: 'popup-menu-icon'
-        });
-
-        let delete_btn = new St.Button({
-          style_class: 'gt-action-btn',
-          child: icon_delete
-        });
-
-        delete_btn.set_x_align(Clutter.ActorAlign.END);
-        delete_btn.set_x_expand(false);
-        delete_btn.set_y_expand(true);
-
-        item.actor.add_child(delete_btn);
-        delete_btn.connect('button-press-event',
-          () => {
-            that.deleteItem(file_name);
-          }
-        );
-        return item;
-      }
-
       let children = this.trash_files_uri.enumerate_children('*', 0, null);
       let count = 0;
       let file_info = null;
 
       while ((file_info = children.next_file(null)) != null) {
-        this.trash_menu.addMenuItem(trash_item(this, file_info));
+        this.trash_menu.addMenuItem(new TrashItem.TrashItem(this, file_info));
         count++
       }
       children.close(null)
@@ -210,13 +138,29 @@ const gnomeTrashMenu = GObject.registerClass(
       this.trash_menu.removeAll();
     }
 
+    onEmptyTrash() {
+      const title = _("Empty Trash?");
+      const message = _("Are you sure you want to delete all items from the trash?");
+      const sub_message = _("This operation cannot be undone.");
+
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Empty"), { flag: ConfirmDialog.CONFIRM_ALWAYS_ASK }, this.doEmptyTrash.bind(this));
+    }
+
+    doEmptyTrash() {
+      Utils.spawn_sync('gio', 'trash', '--empty');
+    }
+
+    onOpenTrash() {
+      Utils.spawn_async('nautilus', 'trash:///');
+    }
+
     openTrashItem(file_name) {
       let file = this.trash_files_uri.get_child(file_name);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this.menu.close();
     }
 
-    restoreItem(file_name) {
+    onRestoreItem(file_name) {
       let info = this.parseTrashInfo(file_name);
       if (info.err) {
         Main.notifyError(_("Error"), info.err);
@@ -226,10 +170,10 @@ const gnomeTrashMenu = GObject.registerClass(
       let message = _("Restore '%s' to:").format(file_name) + "\n  " + info.Path;
       let sub_message = _("Deleted at: ") + info.DeletionDate;
 
-      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Restore"), this.ask_for_restore_item, (this.doRestoreItem.bind(this, file_name, info.Path)));
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Restore"), this.ask_for_restore_item, (this.restoreItem.bind(this, file_name, info.Path)));
     }
 
-    doRestoreItem(file_name, path) {
+    restoreItem(file_name, path) {
       log("Trying to restore " + file_name + " to " + path);
       let dst = Gio.file_new_for_path(path);
       if (dst.query_exists(null)) {
@@ -245,15 +189,15 @@ const gnomeTrashMenu = GObject.registerClass(
       }
     }
 
-    deleteItem(file_name) {
+    onDeleteItem(file_name) {
       let title = _("Delete item permanently");
       let message = _("Are you sure you want to delete '%s'?").format(file_name);
       let sub_message = _("This operation cannot be undone.");
 
-      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Delete"), this.ask_for_delete_item, (this.doDeleteItem.bind(this, file_name)));
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Delete"), this.ask_for_delete_item, (this.deleteItem.bind(this, file_name)));
     }
 
-    doDeleteItem(filename) {
+    deleteItem(filename) {
       if (Utils.spawn_sync('rm', '-rf', this.getTrashItemFilePath(filename))) {
         Utils.spawn_sync('rm', '-f', this.getTrashItemInfoPath(filename));
       }

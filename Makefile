@@ -10,6 +10,7 @@ all: pack
 pack:
 	@gnome-extensions pack --force --gettext-domain $(EXT_NAME) \
 		--extra-source=actionBar.js \
+		--extra-source=trashItem.js \
 		--extra-source=searchBox.js \
 		--extra-source=scrollMenu.js \
 		--extra-source=confirmDialog.js \
