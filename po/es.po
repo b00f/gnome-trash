@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-trash package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-trash\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-25 13:45+0800\n"
+"PO-Revision-Date: 2020-05-17 19:36+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"Last-Translator: Carlos Suárez <bitseater@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
+
+#, javascript-format
+msgid "Are you sure you want to delete '%s'?"
+msgstr "¿Seguro que quiere borrar '%s'?"
+
+msgid "Are you sure you want to delete all items from the trash?"
+msgstr "¿Seguro que quiere borrar todos los elementos de la papelera?"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+#, javascript-format
+msgid "Cause: %s"
+msgstr "Causa: %s"
+
+msgid "Delete"
+msgstr "Borrar"
+
+msgid "Delete item permanently"
+msgstr "Borrar elemento permanentemente"
+
+msgid "Deleted at: "
+msgstr "Borrado en:"
+
+msgid "Don't ask until next login."
+msgstr "No preguntar hasta el siguiente  acceso."
+
+msgid "Empty"
+msgstr "Vaciar"
+
+msgid "Empty Trash"
+msgstr "Vaciar Papelera"
+
+msgid "Empty Trash?"
+msgstr "¿Vaciar Papelera?"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Gnome-trash failed to start"
+msgstr "Gnome-trash falló al inicio"
+
+msgid "No trash folder is detected."
+msgstr "No se detecta carpeta de Papelera."
+
+msgid "Open Trash"
+msgstr "Abrir Papelera"
+
+msgid "Operation failed"
+msgstr "Operación fallida"
+
+msgid "Refusing to overwrite existing file."
+msgstr "Rehusando sobreescribir archivo existente."
+
+msgid "Restore"
+msgstr "Restaurar"
+
+#, javascript-format
+msgid "Restore '%s' to:"
+msgstr "Restaurar '%s' a:"
+
+msgid "Restore item?"
+msgstr "¿Restaurar elemento?"
+
+msgid "This operation cannot be undone."
+msgstr "Esta operación no puede ser deshecha."
+
+msgid "Trash"
+msgstr "Papelera"
+
+msgid "Type here to search..."
+msgstr "Escriba aquí para buscar..."
