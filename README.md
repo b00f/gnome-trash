@@ -37,6 +37,7 @@ You can also [add new translation](https://wiki.gnome.org/Projects/GnomeShell/Ex
 
 - Axel von Bertoldi: Original author
 - Jonatan Zeidler <jonatan_zeidler@hotmail.de>: German translations
-- Raphaël Rochet <raphael.rochet@gmail.com>: French translation
 - Renato Cordeiro Ferreira <renato.cferreira@hotmail.com>: Brazilian Portuguese translation
-- galen1423: <gnu.linux@zaclys.net> French translation
+- Raphaël Rochet <raphael.rochet@gmail.com>: French translation
+- galen1423: <gnu.linux@zaclys.net>: French translation
+- Carlos Suárez: <bitseater@gmail.com>: Spanish translation
