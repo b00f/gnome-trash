@@ -24,7 +24,9 @@ var SearchBox = GObject.registerClass(class SearchBox extends PopupMenu.PopupBas
       track_hover: true
     });
 
-    this.actor.add(this.search_entry, { expand: true });
+    this.search_entry.set_x_expand(true);
+
+    this.actor.add_child(this.search_entry);
 
   }
 

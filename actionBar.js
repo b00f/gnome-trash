@@ -40,7 +40,7 @@ var ActionBar = GObject.registerClass(
       open_btn.connect('activate', () => {
         parent.onOpenTrash();
       });
-      this.actionsBox.add(open_btn, { expand: true });
+      this.actionsBox.add_child(open_btn);
 
       let empty_btn = new PopupMenu.PopupBaseMenuItem();
 
@@ -57,7 +57,7 @@ var ActionBar = GObject.registerClass(
       empty_btn.connect('activate', () => {
         parent.onEmptyTrash();
       });
-      this.actionsBox.add(empty_btn, { expand: true });
+      this.actionsBox.add_child(empty_btn);
 
       this.actor.add(this.actionsBox);
     }
