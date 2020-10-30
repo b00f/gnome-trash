@@ -26,30 +26,35 @@ const ConfirmDialog = GObject.registerClass(
     _init(title, desc, ok_label, dont_ask, callback) {
       super._init();
 
-      let main_box = new St.BoxLayout({
-        vertical: false,
-        style_class: 'gt-modal-dialog',
-      });
-      this.contentLayout.add(main_box, { x_fill: true, y_fill: true });
+      let main_box = new St.BoxLayout();
+      main_box.vertical = false;
+      main_box.style_class = 'gt-modal-dialog';
 
-      let message_box = new St.BoxLayout({
-        vertical: true
-      });
-      main_box.add(message_box, { y_align: St.Align.START });
+      this.contentLayout.add(main_box);
+      this.contentLayout.x_fill = true;
+      this.contentLayout.y_fill = true;
 
-      let subject_label = new St.Label({
-        style: `font-weight: 700`,
-        text: title
-      });
+      let message_box = new St.BoxLayout();
+      message_box.vertical = true;
 
-      message_box.add(subject_label, { y_fill: true, y_align: St.Align.START });
+      main_box.add(message_box);
+      message_box.y_align = St.Align.START;
 
-      let desc_label = new St.Label({
-        style: 'padding-top: 10px; padding-bottom: 20px;',
-        text: desc
-      });
+      let subject_label = new St.Label();
+      subject_label.style = 'font-weight: 700';
+      subject_label.text = title;
 
-      message_box.add(desc_label, { y_fill: true, y_align: St.Align.START });
+      message_box.add(subject_label);
+      message_box.y_fill = true;
+      message_box.y_align = St.Align.START;
+
+      let desc_label = new St.Label();
+      desc_label.style = 'padding-top: 10px; padding-bottom: 20px;';
+      desc_label.text = desc;
+
+      message_box.add(desc_label);
+      message_box.y_fill = true;
+      message_box.y_align = St.Align.START;
 
       if (dont_ask.flag == CONFIRM_ASK) {
         try {

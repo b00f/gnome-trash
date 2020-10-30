@@ -24,7 +24,7 @@ install: pack
 	@gnome-extensions install $(BUNDLE) --force
 	@echo extension installed!
 
-test: install
+test_wayland: install
 	# https://wiki.gnome.org/Projects/GnomeShell/Extensions/Writing#Extension_Creation
 	@dbus-run-session -- gnome-shell --nested --wayland
 
