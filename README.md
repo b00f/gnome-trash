@@ -4,13 +4,9 @@ A gnome shell extension to manage your **home trash**.
 
 ![Screenshot](https://gitlab.com/b00f/gnome-trash/-/raw/master/media/screenshot.png "Screenshot")
 
-It allows you to manage the trash items and empty or open the Trash folder. It hides completely when the trash is empty, and lists the files in the trash bin in the panel menu.
+It allows you to manage the trash items and empty or open the Trash folder. It lists the files in the trash bin in the panel menu.
 
-## History
-
-This repository is inspired by [here](https://gitlab.com/bertoldia/gnome-shell-trash-extension). The original repository has not been updated for a long time. Some merge requests (including mine) are waiting for approval for more than a year.
-
-Note: This extension is only shows items under home trash folder(`~/.local/share/Trash`). There is an open [issue](https://gitlab.com/b00f/gnome-trash/-/issues/4) about supporting trash items on other partitions. Any help would be greatly appreciated.
+Note: This extension is only shows items under home trash folder(`~/.local/share/Trash`). There is an open [issue](https://gitlab.com/b00f/gnome-trash/-/issues/4) about supporting trash items on other partitions. Any help or comment would be greatly appreciated.
 
 ## Install from source code
 
@@ -22,7 +18,9 @@ make install
 ```
 
 If you are going to test your changes, run: `make test`.
-It automatically installs the extension and runs a nested gnome-shell.
+It automatically installs the extension and restart the gnome-shell.
+
+You can run `make test_wayland` to test this extension on [wayland](https://wayland.freedesktop.org/).
 
 ## How to contribute
 
@@ -32,12 +30,3 @@ To start, check the code; there are some `TODO` comments. You might be intereste
 You can also [add new translation](https://wiki.gnome.org/Attic/GnomeShell/Extensions/Writing#Extension_Utils) by this command:
 `msginit -i ./po/gnome-trash.pot -l <YOUR-LANG-ID>`.
 
-
-## Special Thanks
-
-- Axel von Bertoldi: Original author
-- Jonatan Zeidler <jonatan_zeidler@hotmail.de>: German translations
-- Renato Cordeiro Ferreira <renato.cferreira@hotmail.com>: Brazilian Portuguese translation
-- Raphaël Rochet <raphael.rochet@gmail.com>: French translation
-- galen1423: <gnu.linux@zaclys.net>: French translation
-- Carlos Suárez: <bitseater@gmail.com>: Spanish translation

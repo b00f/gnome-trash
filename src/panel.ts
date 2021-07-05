@@ -6,41 +6,38 @@ import * as TrashMenu from 'trashMenu';
 import * as SearchBox from 'searchBox';
 import * as ActionBar from 'actionBar';
 import * as log from 'log';
+import * as utils from 'utils';
 
 const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
-const { St, GObject, Meta, Shell, GLib } = imports.gi;
+const { St, GObject, Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 export const Panel = GObject.registerClass(
   class Panel extends PanelMenu.Button {
     private _trashPath: string = "";
-    private _trashURI: string = "";
-    private _trashInfo: string = "";
     // @ts-ignore
     private _trashMenu: TrashMenu.TrashMenu;
+    // @ts-ignore
+    private _trashDir: Gio.File;
 
     protected _init() {
-      super._init(0.0, _("Trash"));
+      super._init(0.0, _("Gnome Trash"));
       this.trashIcon = new St.Icon({
         icon_name: 'user-trash-full-symbolic',
         style_class: 'popup-menu-icon'
       })
       this.add_actor(this.trashIcon);
 
-      let localTrash = GLib.get_home_dir() + '/.local/share/Trash/';
-      this._trashPath = localTrash + 'files/';
-      this._trashInfo = localTrash + 'info/';
-      this._trashFile = Gio.file_new_for_path(this._trashPath);
-      if (!this._trashFile.query_exists(null)) {
+      this._trashPath = GLib.get_home_dir() + '/.local/share/Trash/';
+      this._trashDir = Gio.file_new_for_path(this._trashPath);
+      if (!this._trashDir.query_exists(null)) {
         Main.notifyError(_("Gnome-trash failed to start"), _("No trash folder is detected."));
-        return;
       }
 
       this._setupMenu();
-      this._onTrashChange();
       this._setupWatch();
 
       // this.ask_for_delete_item = { flag: ConfirmDialog.CONFIRM_ASK };
@@ -67,11 +64,10 @@ export const Panel = GObject.registerClass(
         global.stage.set_key_focus(this._searchBox.searchEntry);
       });
 
-      this._actionBar.registerRemoveAll(() => {
-        this._trashMenu.removeAll();
-      });
-
+      this._actionBar.onEmptyTrash(this._onEmptyTrash.bind(this));
+      this._actionBar.onOpenTrash(this._onOpenTrash.bind(this));
       this._searchBox.onTextChanged(this._onSearch.bind(this));
+      this._onTrashChange();
     }
 
     private _setupMenu() {
@@ -83,7 +79,7 @@ export const Panel = GObject.registerClass(
       let separator1 = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator1);
 
-      this._trashMenu = new TrashMenu.TrashMenu();
+      this._trashMenu = new TrashMenu.TrashMenu(this._trashPath);
       this.menu.addMenuItem(this._trashMenu);
 
       let separator2 = new PopupMenu.PopupSeparatorMenuItem();
@@ -99,56 +95,43 @@ export const Panel = GObject.registerClass(
     }
 
     private _setupWatch() {
-      this.monitor = this._trashFile.monitor_directory(0, null);
-      this.monitor.connect('changed', this.onTrashChange.bind(this));
+      this.monitor = this._trashDir.monitor_directory(0, null);
+      this.monitor.connect('changed', this._onTrashChange.bind(this));
     }
 
     private _onTrashChange() {
-      this.clearMenu();
-      if (this.listTrashItems() == 0) {
-        this.visible = false;
-      } else {
-        this.show();
-        this.visible = true;
-      }
-      this._onSearch();
-    }
-
-    listTrashItems() {
-      let children = this._trashFile.enumerate_children('*', 0, null);
-      let count = 0;
-      let file_info = null;
-
-      while ((file_info = children.next_file(null)) != null) {
-        this._trashMenu.addMenuItem(new TrashItem.TrashItem(this, file_info));
-        count++
-      }
-      children.close(null)
-      return count;
+      // this.clearMenu();
+      // if (this.listTrashItems() == 0) {
+      //   this.visible = false;
+      // } else {
+      //   this.show();
+      //   this.visible = true;
+      // }
+      // this._onSearch();
     }
 
     clearMenu() {
       this._trashMenu.removeAll();
     }
 
-    onEmptyTrash() {
+    private _onEmptyTrash() {
       const title = _("Empty Trash?");
       const message = _("Are you sure you want to delete all items from the trash?");
       const sub_message = _("This operation cannot be undone.");
 
-      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Empty"), { flag: ConfirmDialog.CONFIRM_ALWAYS_ASK }, this.doEmptyTrash.bind(this));
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Empty"), { flag: ConfirmDialog.CONFIRM_ALWAYS_ASK }, this._doEmptyTrash.bind(this));
     }
 
-    doEmptyTrash() {
-      Utils.spawn_sync('gio', 'trash', '--empty');
+    private _doEmptyTrash() {
+      utils.spawn_sync('gio', 'trash', '--empty');
     }
 
-    onOpenTrash() {
-      Utils.spawn_async('nautilus', 'trash:///');
+    private _onOpenTrash() {
+      utils.spawn_async('nautilus', 'trash:///');
     }
 
     openTrashItem(file_name) {
-      let file = this._trashFile.get_child(file_name);
+      let file = this._trashDir.get_child(file_name);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this.menu.close();
     }
@@ -196,39 +179,6 @@ export const Panel = GObject.registerClass(
       }
     }
 
-    getTrashItemFilePath(file_name) {
-      return this._trashPath + file_name;
-    }
-
-    getTrashItemInfoPath(info_file) {
-      return this._trashInfo + info_file + ".trashinfo";
-    }
-
-    parseTrashInfo(file_name) {
-      let info_file = this.getTrashItemInfoPath(file_name);
-      log("Trying to parse " + info_file);
-      try {
-        let [ok, info] = GLib.file_get_contents(info_file);
-        if (!ok) {
-          throw "Unable to get contents of %s".format(info_file);
-        }
-
-        let lines = ByteArray.toString(info).split('\n');
-        if (lines[0] != '[Trash Info]') {
-          throw "Invalid trash info at %s".format(info_file);
-        }
-
-        let path = lines[1].split('=');
-        let date = lines[2].split('=');
-        let out = {};
-        out[path[0]] = unescape(path[1]);
-        out[date[0]] = unescape(date[1]);
-
-        return out;
-      } catch (e) {
-        return { 'err': e.toString() };
-      }
-    }
     private _toggle() {
       this.menu.toggle();
     }

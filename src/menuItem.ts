@@ -10,14 +10,16 @@ const Clutter = imports.gi.Clutter;
 
 
 export class TrashInfo {
-  path: string;
-  filename: string;
-  deletedAt: number;
+  public path: string;
+  public filename: string;
+  public restorePath: string;
+  public deletedAt: number;
 
-  constructor(path: string, filename: string, deletedAt: number) {
+  constructor(path: string, filename: string, deletedAt: number, restorePath: string) {
     this.path = path;
     this.filename = filename;
     this.deletedAt = deletedAt;
+    this.restorePath = restorePath;
   }
 
   display(): string {

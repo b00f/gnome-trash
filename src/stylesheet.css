@@ -1,0 +1,21 @@
+.gnome-trash .modal-dialog {
+    min-width: 400px;
+}
+
+.gnome-trash .scroll-view {
+    height: 500px;
+    width: 360px;
+}
+
+.gnome-trash .search-box {}
+
+.gnome-trash .action-box {
+    padding: 0px;
+    margin: 0px;
+}
+
+.gnome-trash .action-btn {}
+
+.gnome-trash .action-box-layout {}
+
+.gnome-trash .trash-item {}

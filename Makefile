@@ -20,12 +20,14 @@ depcheck:
 pack: compile
 	@gnome-extensions pack --force --gettext-domain=$(EXT_NAME) dist \
 		--extra-source=panel.js \
+		--extra-source=prefs.js \
 		--extra-source=scrollMenu.js \
 		--extra-source=trashMenu.js \
 		--extra-source=confirmDialog.js \
 		--extra-source=menuItem.js \
 		--extra-source=searchBox.js \
 		--extra-source=actionBar.js \
+		--extra-source=settings.js \
 		--extra-source=log.js \
 		--extra-source=utils.js \
 		--extra-source=README.md \

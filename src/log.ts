@@ -12,7 +12,7 @@ export enum LOG_LEVELS {
 }
 
 export function log_level() {
-    let settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.gnome-clipboard');
+    let settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.gnome-trash');
     let log_level = settings.get_uint('log-level');
 
     return log_level;

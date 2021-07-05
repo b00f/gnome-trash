@@ -361,7 +361,9 @@ declare namespace Gio {
         replace_contents_bytes_async (contents: GLib.Bytes, etag: string, make_backup: boolean, flags: FileCreateFlags, cancellable: Cancellable, callback: AsyncReadyCallback, user_data: any) : void;
         replace_contents_finish (res: AsyncResult, new_etag: string) : boolean;
         replace_finish (res: AsyncResult) : FileOutputStream;
-
+        enumerate_children (attributes: string, flags: any, cancelable: any) : any;
+        query_exists (cancelable: any): boolean;
+        monitor_directory (flags: any, cancelable: any): any;
     }
 
     enum FileCreateFlags {

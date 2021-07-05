@@ -1,2 +1,5 @@
 *.zip
 *.mo
+build
+dist
+*.compiled

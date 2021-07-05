@@ -8,81 +8,55 @@ export var ActionBar = GObject.registerClass(
       super._init({
         activate: false,
         hover: false,
-        style_class: 'action-bar',
+        style_class: 'gt-action-box',
       })
 
       let actionsBox = new St.BoxLayout({
         vertical: false,
+        style_class: 'gt-action-box-layout',
       });
 
-      actionsBox.set_x_expand(true);
-      actionsBox.set_y_expand(true);
+      this._openBtn = new PopupMenu.PopupBaseMenuItem();
 
-      // TODO:: Add tooltip
-      this._enableBtn = new PopupMenu.PopupSwitchMenuItem(
-        _("Enable"), false, {
-        reactive: true, hover: true,
-      });
-      actionsBox.add(this._enableBtn);
-      // Add a spacer
-      this.spacer = new PopupMenu.PopupBaseMenuItem();
-      this.spacer.set_x_expand(true);
-      this.spacer.set_y_expand(true);
-      actionsBox.add(this.spacer);
-
-      // Add 'Clear' button which removes all items from cache
-      this.clearBtn = new PopupMenu.PopupBaseMenuItem({
-        style_class: 'ci-action-bar-btn'
+      // Open trash button
+      let openIcon = new St.Icon({
+        icon_name: "folder-open-symbolic",
+        style_class: 'popup-menu-icon'
       });
 
+      let open_label = new St.Label({ text: _("Open Trash") });
 
-      this.clearIcon = new St.Icon({
-        icon_name: "gtk-clear-symbolic",
+      this._openBtn.add_child(openIcon);
+      this._openBtn.add_child(open_label);
+      actionsBox.add(this._openBtn);
+
+      this._emptyBtn = new PopupMenu.PopupBaseMenuItem();
+
+      // Open trash button
+      let emptyIcon = new St.Icon({
+        icon_name: "edit-delete-symbolic",
         style_class: 'popup-menu-icon',
-        hover: true,
-
-      });
-      this.clearBtn.add_child(this.clearIcon);
-      this.clearBtn.set_x_expand(false);
-      this.clearBtn.set_y_expand(false);
-      this.clearBtn._ornamentLabel.visible = false;
-      actionsBox.add(this.clearBtn);
-
-      // TODO:: Add tooltip
-      // Add 'Settings' menu item to open settings
-      this.settingsBtn = new PopupMenu.PopupBaseMenuItem({
-        style_class: 'ci-action-bar-btn'
       });
 
-      this.settingsIcon = new St.Icon({
-        icon_name: "gtk-preferences-symbolic",
-        style_class: 'popup-menu-icon',
-        hover: true,
+      let emptyLbl = new St.Label({ text: _("Empty Trash") });
 
-      });
-      this.settingsBtn.add_child(this.settingsIcon);
-      this.settingsBtn.set_x_expand(false);
-      this.settingsBtn.set_y_expand(false);
-      this.settingsBtn._ornamentLabel.visible = false;
-      actionsBox.add(this.settingsBtn);
+      this._emptyBtn.add_child(emptyLbl);
+      this._emptyBtn.add_child(emptyIcon);
+      actionsBox.add(this._emptyBtn);
 
       this.actor.add(actionsBox);
     }
 
-    registerRemoveAll(callback: () => void) {
-      this.clearBtn.connect('activate', (_obj: any) => {
+    onEmptyTrash(callback: () => void) {
+      this._emptyBtn.connect('activate', () => {
         callback();
       });
     }
 
-    registerOpenSettings(callback: () => void) {
-      this.settingsBtn.connect('activate', (_obj: any) => {
+    onOpenTrash(callback: () => void) {
+      this._openBtn.connect('activate', () => {
         callback();
       });
-    }
-
-    enable() {
-      return this._enableBtn.state;
     }
   }
 );
