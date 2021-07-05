@@ -1,31 +1,28 @@
-const St = imports.gi.St;
+// @ts-ignore
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+
+
+import * as TrashMenu from 'trashMenu';
+import * as SearchBox from 'searchBox';
+import * as ActionBar from 'actionBar';
+import * as log from 'log';
+
+const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Clutter = imports.gi.Clutter;
-const ByteArray = imports.byteArray;
-const Mainloop = imports.mainloop;
-
+const { St, GObject, Meta, Shell, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const ActionBar = Me.imports.actionBar;
-const ConfirmDialog = Me.imports.confirmDialog;
-const ScrollMenu = Me.imports.scrollMenu;
-const TrashItem = Me.imports.trashItem;
-const SearchBox = Me.imports.searchBox;
-const Utils = Me.imports.utils;
 
+export const Panel = GObject.registerClass(
+  class Panel extends PanelMenu.Button {
+    private _trashPath: string = "";
+    private _trashURI: string = "";
+    private _trashInfo: string = "";
+    // @ts-ignore
+    private _trashMenu: TrashMenu.TrashMenu;
 
-const Gettext = imports.gettext.domain("gnome-trash");
-const _ = Gettext.gettext;
-
-
-const gnomeTrashMenu = GObject.registerClass(
-  class gnomeTrashMenu extends PanelMenu.Button {
-    _init() {
+    protected _init() {
       super._init(0.0, _("Trash"));
       this.trashIcon = new St.Icon({
         icon_name: 'user-trash-full-symbolic',
@@ -33,84 +30,80 @@ const gnomeTrashMenu = GObject.registerClass(
       })
       this.add_actor(this.trashIcon);
 
-      this.trash_path = GLib.get_home_dir() + '/.local/share/Trash/';
-      this.trash_files = this.trash_path + 'files/';
-      this.trash_info = this.trash_path + 'info/';
-      this.trash_files_uri = Gio.file_new_for_path(this.trash_files);
-      if (!this.trash_files_uri.query_exists(null)) {
+      let localTrash = GLib.get_home_dir() + '/.local/share/Trash/';
+      this._trashPath = localTrash + 'files/';
+      this._trashInfo = localTrash + 'info/';
+      this._trashFile = Gio.file_new_for_path(this._trashPath);
+      if (!this._trashFile.query_exists(null)) {
         Main.notifyError(_("Gnome-trash failed to start"), _("No trash folder is detected."));
         return;
       }
 
-      this.addMenuItems();
-      this.onTrashChange();
-      this.setupWatch();
+      this._setupMenu();
+      this._onTrashChange();
+      this._setupWatch();
 
-      this.ask_for_delete_item = { flag: ConfirmDialog.CONFIRM_ASK };
-      this.ask_for_restore_item = { flag: ConfirmDialog.CONFIRM_ASK };
+      // this.ask_for_delete_item = { flag: ConfirmDialog.CONFIRM_ASK };
+      // this.ask_for_restore_item = { flag: ConfirmDialog.CONFIRM_ASK };
 
       // Clear search when re-open the menu and set focus on search box
-      this.menu.connect('open-state-changed', function (self, open) {
+      this._openStateChangedID = this._trashMenu.connect('open-state-changed', (_widget: any, open: boolean) => {
+        log.debug("open-state-changed event");
         if (open) {
-          let that = this;
-          let t = Mainloop.timeout_add(50, function () {
-            that.search_box.setText('');
-            global.stage.set_key_focus(that.search_box.search_entry);
+          let t = Mainloop.timeout_add(50, () => {
+            this._searchBox.setText('');
+
+            // Don't invoke timer again
             Mainloop.source_remove(t);
+            return false;
           });
         }
-      }.bind(this));
+      });
 
-      log("gnome-trash initialized successfully");
+
+      this._keyPressEventID = this._trashMenu.scrollView.connect('key-press-event', (_widget: any, _event: any, _data: any) => {
+        log.debug("key-press event");
+
+        global.stage.set_key_focus(this._searchBox.searchEntry);
+      });
+
+      this._actionBar.registerRemoveAll(() => {
+        this._trashMenu.removeAll();
+      });
+
+      this._searchBox.onTextChanged(this._onSearch.bind(this));
     }
 
-    addMenuItems() {
-      this.search_box = new SearchBox.SearchBox();
-      this.menu.addMenuItem(this.search_box);
+    private _setupMenu() {
+      this.menu.box.style_class = 'popup-menu-content gnome-trash';
+
+      this._searchBox = new SearchBox.SearchBox();
+      this.menu.addMenuItem(this._searchBox);
 
       let separator1 = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator1);
 
-      this.trash_menu = new ScrollMenu.ScrollMenu();
-      this.menu.addMenuItem(this.trash_menu);
+      this._trashMenu = new TrashMenu.TrashMenu();
+      this.menu.addMenuItem(this._trashMenu);
 
       let separator2 = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator2);
 
-      // Toolbar
-      this.action_bar = new ActionBar.ActionBar(this);
-      this.menu.addMenuItem(this.action_bar);
-
-      this.search_box.onTextChanged(this.onSearchItemChanged.bind(this));
+      this._actionBar = new ActionBar.ActionBar(this);
+      this.menu.addMenuItem(this._actionBar);
     }
 
-    onSearchItemChanged() {
-      let query = this.search_box.getText().toLowerCase();
-
-      if (query === '') {
-        this.trash_menu.getAllItems().forEach(function (item) {
-          item.actor.visible = true;
-        });
-      }
-      else {
-        this.trash_menu.getAllItems().forEach(function (item) {
-          let text = item.file_name.toLowerCase();
-          let matched = text.indexOf(query) >= 0;
-          item.actor.visible = matched
-        });
-      }
+    private _onSearch() {
+      let query = this._searchBox.getText().toLowerCase();
+      this._historyMenu.filterItems(query);
     }
 
-    destroy() {
-      super.destroy();
-    }
-
-    setupWatch() {
-      this.monitor = this.trash_files_uri.monitor_directory(0, null);
+    private _setupWatch() {
+      this.monitor = this._trashFile.monitor_directory(0, null);
       this.monitor.connect('changed', this.onTrashChange.bind(this));
     }
 
-    onTrashChange() {
+    private _onTrashChange() {
       this.clearMenu();
       if (this.listTrashItems() == 0) {
         this.visible = false;
@@ -118,16 +111,16 @@ const gnomeTrashMenu = GObject.registerClass(
         this.show();
         this.visible = true;
       }
-      this.onSearchItemChanged();
+      this._onSearch();
     }
 
     listTrashItems() {
-      let children = this.trash_files_uri.enumerate_children('*', 0, null);
+      let children = this._trashFile.enumerate_children('*', 0, null);
       let count = 0;
       let file_info = null;
 
       while ((file_info = children.next_file(null)) != null) {
-        this.trash_menu.addMenuItem(new TrashItem.TrashItem(this, file_info));
+        this._trashMenu.addMenuItem(new TrashItem.TrashItem(this, file_info));
         count++
       }
       children.close(null)
@@ -135,7 +128,7 @@ const gnomeTrashMenu = GObject.registerClass(
     }
 
     clearMenu() {
-      this.trash_menu.removeAll();
+      this._trashMenu.removeAll();
     }
 
     onEmptyTrash() {
@@ -155,7 +148,7 @@ const gnomeTrashMenu = GObject.registerClass(
     }
 
     openTrashItem(file_name) {
-      let file = this.trash_files_uri.get_child(file_name);
+      let file = this._trashFile.get_child(file_name);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this.menu.close();
     }
@@ -204,11 +197,11 @@ const gnomeTrashMenu = GObject.registerClass(
     }
 
     getTrashItemFilePath(file_name) {
-      return this.trash_files + file_name;
+      return this._trashPath + file_name;
     }
 
     getTrashItemInfoPath(info_file) {
-      return this.trash_info + info_file + ".trashinfo";
+      return this._trashInfo + info_file + ".trashinfo";
     }
 
     parseTrashInfo(file_name) {
@@ -236,20 +229,25 @@ const gnomeTrashMenu = GObject.registerClass(
         return { 'err': e.toString() };
       }
     }
+    private _toggle() {
+      this.menu.toggle();
+    }
+
+    public destroy() {
+      this._disconnectClipboardTimer();
+      this._disconnectSelectionOwnerChanged();
+
+      if (this._openStateChangedID) {
+        this._trashMenu.disconnect(this._openStateChangedID);
+        this._openStateChangedID = 0;
+      }
+
+      if (this._keyPressEventID) {
+        this._trashMenu.scrollView.disconnect(this._keyPressEventID);
+        this._keyPressEventID = 0;
+      }
+
+      super.destroy();
+    }
   }
 );
-
-
-function init() {
-  ExtensionUtils.initTranslations();
-}
-
-let _gnomeTrash;
-function enable() {
-  _gnomeTrash = new gnomeTrashMenu;
-  Main.panel.addToStatusArea('gnome_trash_button', _gnomeTrash);
-}
-
-function disable() {
-  _gnomeTrash.destroy();
-}
