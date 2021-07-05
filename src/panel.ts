@@ -64,6 +64,10 @@ export const Panel = GObject.registerClass(
         global.stage.set_key_focus(this._searchBox.searchEntry);
       });
 
+      this._actionBar.onOpenSettings(() => {
+        ExtensionUtils.openPrefs();
+      })
+
       this._actionBar.onEmptyTrash(this._onEmptyTrash.bind(this));
       this._actionBar.onOpenTrash(this._onOpenTrash.bind(this));
       this._searchBox.onTextChanged(this._onSearch.bind(this));
@@ -183,9 +187,6 @@ export const Panel = GObject.registerClass(
     }
 
     public destroy() {
-      this._disconnectClipboardTimer();
-      this._disconnectSelectionOwnerChanged();
-
       if (this._openStateChangedID) {
         this._trashMenu.disconnect(this._openStateChangedID);
         this._openStateChangedID = 0;

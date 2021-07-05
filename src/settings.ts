@@ -13,16 +13,13 @@ interface Settings extends GObject.Object {
     bind(key: string, object: GObject.Object, property: string, flags: any): void
 }
 
-export const SCHEMA_ID = 'org.gnome.shell.extensions.gnome-clipboard';
+export const SCHEMA_ID = 'org.gnome.shell.extensions.gnome-trash';
 
-export const HISTORY_SIZE = "history-size";
-export const HISTORY_SORT = "history-sort";
-export const CLIPBOARD_TIMER = "clipboard-timer";
-export const TIMER_INTERVAL = "timer-interval";
+export const TRASH_SORT = "trash-sort";
 
-export const HISTORY_SORT_MOST_USAGE = 0;
-export const HISTORY_SORT_RECENT_USAGE = 1;
-export const HISTORY_SORT_COPY_TIME = 2;
+
+export const TRASH_SORT_FILE_NAME = 0;
+export const TRASH_SORT_DELETE_TIME = 1;
 export class ExtensionSettings {
     private _settings: Settings = ExtensionUtils.getSettings(SCHEMA_ID);
 
@@ -31,19 +28,7 @@ export class ExtensionSettings {
             callback); //get notified on every schema change
     }
 
-    historySize(): number {
-        return this._settings.get_uint(HISTORY_SIZE);
-    }
-
-    historySort(): number {
-        return this._settings.get_uint(HISTORY_SORT);
-    }
-
-    clipboardTimer(): boolean {
-        return this._settings.get_boolean(CLIPBOARD_TIMER);
-    }
-
-    clipboardTimerIntervalInMillisecond(): number {
-        return this._settings.get_uint(TIMER_INTERVAL);
+    trashSort(): number {
+        return this._settings.get_uint(TRASH_SORT);
     }
 }

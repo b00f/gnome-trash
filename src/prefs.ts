@@ -14,7 +14,7 @@ import * as Settings from 'settings';
 
 
 const Gettext = imports.gettext;
-const _ = Gettext.domain('gnome-clipboard').gettext;
+const _ = Gettext.domain('gnome-trash').gettext;
 
 export function init() {
     Gtk.init(null);
@@ -78,21 +78,11 @@ export function buildPrefsWidget() {
     };
 
     {
-        let widget = new Gtk.SpinButton({
-            halign: Gtk.Align.END,
-        });
-        widget.set_range(2, 1000);
-        widget.set_increments(1, 1);
-        addRowAndBindSetting(prefsGrid, widget, Settings.HISTORY_SIZE, _("Maximum size of history:"));
-    }
-
-    {
         let sortStore = new Gtk.ListStore();
         sortStore.set_column_types([GObject.TYPE_STRING]);
         let sorting = [
-            _("Most usage"),
-            _("Resent usage"),
-            _("Copy time"),
+            _("File name"),
+            _("Delete time"),
         ];
         for (let s of sorting) {
             sortStore.set(sortStore.append(), [0], [s]);
@@ -106,34 +96,11 @@ export function buildPrefsWidget() {
         widget.pack_start(renderer, true);
         widget.add_attribute(renderer, "text", 0);
 
-        addRowAndBindSetting(prefsGrid, widget, Settings.HISTORY_SORT, "Sort history by:");
-    }
-
-    {
-        let widget = new Gtk.Switch({
-            halign: Gtk.Align.END,
-        });
-
-        addRowAndBindSetting(prefsGrid, widget, Settings.CLIPBOARD_TIMER, "Read clipboard by timer:");
-    }
-
-    {
-        let widget = new Gtk.SpinButton({
-            halign: Gtk.Align.END,
-        });
-        widget.set_range(100, 100000);
-        widget.set_increments(100, 100);
-        addRowAndBindSetting(prefsGrid, widget, Settings.TIMER_INTERVAL, _("Timer interval (Millisecond):"));
+        addRowAndBindSetting(prefsGrid, widget, Settings.TRASH_SORT, "Sort trash by:");
     }
 
     prefsFrame.add(prefsGrid);
 
-    let prefsFrame2 = new Gtk.Frame({
-        label: _("Preferences"),
-        margin: 18,
-    });
-
-    box.add(prefsFrame2);
     box.show_all();
 
     return box;

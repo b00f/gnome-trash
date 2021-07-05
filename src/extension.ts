@@ -7,7 +7,7 @@ import * as log from 'log';
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
 
-const GETTEXT_DOMAIN = 'gnome-clipboard';
+const GETTEXT_DOMAIN = 'gnome-trash';
 const Gettext = imports.gettext.domain(GETTEXT_DOMAIN);
 export const _ = Gettext.gettext;
 

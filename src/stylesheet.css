@@ -14,7 +14,10 @@
     margin: 0px;
 }
 
-.gnome-trash .action-btn {}
+.gnome-trash .action-bar-btn {
+    margin: 0px;
+    padding: 6px 12px 6px 12px;
+}
 
 .gnome-trash .action-box-layout {}
 
