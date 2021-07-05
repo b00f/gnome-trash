@@ -91,7 +91,7 @@ export const Panel = GObject.registerClass(
 
     private _onSearch() {
       let query = this._searchBox.getText().toLowerCase();
-      this._historyMenu.filterItems(query);
+      this._trashMenu.filterItems(query);
     }
 
     private _setupWatch() {
@@ -100,14 +100,13 @@ export const Panel = GObject.registerClass(
     }
 
     private _onTrashChange() {
-      // this.clearMenu();
-      // if (this.listTrashItems() == 0) {
-      //   this.visible = false;
-      // } else {
-      //   this.show();
-      //   this.visible = true;
-      // }
-      // this._onSearch();
+      this._trashMenu.rebuildMenu();
+      if (this._trashMenu.trashSize() == 0) {
+        this.trashIcon.icon_name = "user-trash-empty-symbolic";
+      } else {
+        this.trashIcon.icon_name = "user-trash-full-symbolic"
+      }
+      this._onSearch();
     }
 
     clearMenu() {

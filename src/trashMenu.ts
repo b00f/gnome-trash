@@ -10,6 +10,7 @@ const { St, GObject, Meta, Shell, GLib } = imports.gi;
 export class TrashMenu
   extends ScrollMenu.ScrollMenu {
   private _path: string;
+  private _trash = new Array<MenuItem.TrashInfo>();
 
   constructor(path: string) {
     super();
@@ -17,12 +18,9 @@ export class TrashMenu
     this._path = path;
   }
 
-  public refresh() {
-    this._rebuildMenu()
-  }
+  public rebuildMenu() {
+    super.removeAll();
 
-  private _rebuildMenu() {
-    let trashFiles = new Array<MenuItem.TrashInfo>();
     let trashPath = this._path + 'files/';
     let trashInfo = this._path + 'info/';
     try {
@@ -56,14 +54,14 @@ export class TrashMenu
           0,
           filename);
 
-        trashFiles.push(trashInfo);
+        this._trash.push(trashInfo);
       }
       children.close(null)
     } catch (err) {
       log.error(`an exception occurred ${err}`);
     }
 
-    trashFiles.forEach((info, _) => {
+    this._trash.forEach((info, _) => {
       let item = new MenuItem.MenuItem(info,
         this._onActivateItem.bind(this),
         this._onRemoveItem.bind(this),
@@ -71,5 +69,9 @@ export class TrashMenu
 
       super.addMenuItem(item);
     });
+  }
+
+  trashSize(): number {
+    return this._trash.length;
   }
 }
