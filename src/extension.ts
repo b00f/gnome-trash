@@ -1,7 +1,7 @@
 // @ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-import * as Panel from 'panel';
+import * as TrashPanel from 'trashPanel';
 import * as log from 'log';
 
 const Main = imports.ui.main;
@@ -24,7 +24,7 @@ export class GnomeExtension {
   enable() {
     log.info(`enabling...`);
 
-    this._panel = new Panel.Panel();
+    this._panel = new TrashPanel.TrashPanel();
     Main.panel.addToStatusArea(this._uuid, this._panel);
   }
 

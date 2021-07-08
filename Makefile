@@ -19,7 +19,7 @@ depcheck:
 
 pack: compile
 	@gnome-extensions pack --force --gettext-domain=$(EXT_NAME) dist \
-		--extra-source=panel.js \
+		--extra-source=trashPanel.js \
 		--extra-source=prefs.js \
 		--extra-source=scrollMenu.js \
 		--extra-source=trashMenu.js \

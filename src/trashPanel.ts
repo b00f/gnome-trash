@@ -15,8 +15,8 @@ const PanelMenu = imports.ui.panelMenu;
 const { St, GObject, Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
-export const Panel = GObject.registerClass(
-  class Panel extends PanelMenu.Button {
+export const TrashPanel = GObject.registerClass(
+  class TrashPanel extends PanelMenu.Button {
     private _trashPath: string = "";
     // @ts-ignore
     private _trashMenu: TrashMenu.TrashMenu;
