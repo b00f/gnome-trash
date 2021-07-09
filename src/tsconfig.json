@@ -8,7 +8,7 @@
         "forceConsistentCasingInFileNames": true,
         "downlevelIteration": true,
         "lib": [
-            "es2015"
+            "ES6"
         ],
         "pretty": true,
         "removeComments": true,

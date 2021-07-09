@@ -1,7 +1,7 @@
 // @ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-import * as utils from 'utils';
+import * as TrashInfo from 'trashInfo';
 
 const St = imports.gi.St;
 const PopupMenu = imports.ui.popupMenu;
@@ -9,28 +9,11 @@ const GObject = imports.gi.GObject;
 const Clutter = imports.gi.Clutter;
 
 
-export class TrashInfo {
-  public path: string;
-  public filename: string;
-  public restorePath: string;
-  public deletedAt: number;
-
-  constructor(path: string, filename: string, deletedAt: number, restorePath: string) {
-    this.path = path;
-    this.filename = filename;
-    this.deletedAt = deletedAt;
-    this.restorePath = restorePath;
-  }
-
-  display(): string {
-    return utils.truncate(this.filename, 32);
-  }
-}
 
 export var MenuItem = GObject.registerClass(
   class MenuItem extends PopupMenu.PopupBaseMenuItem {
     protected _init(
-      fileInfo: TrashInfo,
+      fileInfo: TrashInfo.TrashInfo,
       onActivate: (item: MenuItem) => void,
       onRemove: (item: MenuItem) => void,
       onRestore: (item: MenuItem) => void) {
@@ -38,6 +21,12 @@ export var MenuItem = GObject.registerClass(
       super._init()
 
       this.fileInfo = fileInfo;
+
+      let icon = new St.Icon({
+        gicon: fileInfo.icon,
+        style_class: 'popup-menu-icon'
+      });
+      this.add_child(icon);
 
       let label = new St.Label({ text: fileInfo.display() });
       this.add_child(label);

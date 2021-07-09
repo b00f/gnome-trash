@@ -1,10 +1,11 @@
 // @ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-
 import * as TrashMenu from 'trashMenu';
 import * as SearchBox from 'searchBox';
 import * as ActionBar from 'actionBar';
+import * as TrashInfo from 'trashInfo';
+import * as Settings from 'settings';
 import * as log from 'log';
 import * as utils from 'utils';
 
@@ -14,16 +15,23 @@ const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const { St, GObject, Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
+const ByteArray = imports.byteArray;
 
 export const TrashPanel = GObject.registerClass(
   class TrashPanel extends PanelMenu.Button {
     private _trashPath: string = "";
     // @ts-ignore
     private _trashMenu: TrashMenu.TrashMenu;
+    private _monitorChangeID = 0;
     // @ts-ignore
-    private _trashDir: Gio.File;
+    private _trash: Map<string, TrashInfo.TrashInfo>;
+    // @ts-ignore
+    private _settings: Settings.ExtensionSettings;
 
     protected _init() {
+      this._trash = new Map<string, TrashInfo.TrashInfo>();
+      this._settings = new Settings.ExtensionSettings();
+
       super._init(0.0, _("Gnome Trash"));
       this.trashIcon = new St.Icon({
         icon_name: 'user-trash-full-symbolic',
@@ -32,13 +40,13 @@ export const TrashPanel = GObject.registerClass(
       this.add_actor(this.trashIcon);
 
       this._trashPath = GLib.get_home_dir() + '/.local/share/Trash/';
-      this._trashDir = Gio.file_new_for_path(this._trashPath);
-      if (!this._trashDir.query_exists(null)) {
+      let trashDir = Gio.file_new_for_path(this._trashPath);
+      if (!trashDir.query_exists(null)) {
         Main.notifyError(_("Gnome-trash failed to start"), _("No trash folder is detected."));
       }
 
-      this._setupMenu();
-      this._setupWatch();
+      this._setupPanel();
+      this._setupMonitor();
 
       // this.ask_for_delete_item = { flag: ConfirmDialog.CONFIRM_ASK };
       // this.ask_for_restore_item = { flag: ConfirmDialog.CONFIRM_ASK };
@@ -57,7 +65,6 @@ export const TrashPanel = GObject.registerClass(
         }
       });
 
-
       this._keyPressEventID = this._trashMenu.scrollView.connect('key-press-event', (_widget: any, _event: any, _data: any) => {
         log.debug("key-press event");
 
@@ -68,13 +75,14 @@ export const TrashPanel = GObject.registerClass(
         ExtensionUtils.openPrefs();
       })
 
+      this._settings.onChanged(this._onSettingsChanged.bind(this));
       this._actionBar.onEmptyTrash(this._onEmptyTrash.bind(this));
       this._actionBar.onOpenTrash(this._onOpenTrash.bind(this));
       this._searchBox.onTextChanged(this._onSearch.bind(this));
       this._onTrashChange();
     }
 
-    private _setupMenu() {
+    private _setupPanel() {
       this.menu.box.style_class = 'popup-menu-content gnome-trash';
 
       this._searchBox = new SearchBox.SearchBox();
@@ -83,7 +91,7 @@ export const TrashPanel = GObject.registerClass(
       let separator1 = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator1);
 
-      this._trashMenu = new TrashMenu.TrashMenu(this._trashPath);
+      this._trashMenu = new TrashMenu.TrashMenu();
       this.menu.addMenuItem(this._trashMenu);
 
       let separator2 = new PopupMenu.PopupSeparatorMenuItem();
@@ -98,23 +106,105 @@ export const TrashPanel = GObject.registerClass(
       this._trashMenu.filterItems(query);
     }
 
-    private _setupWatch() {
-      this.monitor = this._trashDir.monitor_directory(0, null);
-      this.monitor.connect('changed', this._onTrashChange.bind(this));
+    private _setupMonitor() {
+      let infoDir = Gio.file_new_for_path(this._trashPath + 'info/');
+      this._monitor = infoDir.monitor_directory(0, null);
+      this._monitorChangeID = this._monitor.connect('changed', this._onTrashChange.bind(this));
     }
 
     private _onTrashChange() {
-      this._trashMenu.rebuildMenu();
-      if (this._trashMenu.trashSize() == 0) {
-        this.trashIcon.icon_name = "user-trash-empty-symbolic";
-      } else {
-        this.trashIcon.icon_name = "user-trash-full-symbolic"
+      log.info(`Trash has changed`);
+
+      // By Deleting a file, this function calls several times.
+      let hasChanged = false;
+      let filesPath = this._trashPath + 'files/';
+      let trashInfoPath = this._trashPath + 'info/';
+      //try {
+      let dir = Gio.file_new_for_path(filesPath);
+      if (!dir.query_exists(null)) {
+        return;
       }
+      let children = dir.enumerate_children('*', 0, null);
+      let fileInfo = null;
+
+      while ((fileInfo = children.next_file(null)) != null) {
+        let filename = fileInfo.get_name();
+        if (this._trash.has(filename)) {
+          continue;
+        }
+
+        let trashPath = filesPath + fileInfo.get_name();
+        let infoPath = trashInfoPath + fileInfo.get_name() + ".trashinfo";
+        let [ok, info] = GLib.file_get_contents(infoPath);
+        if (!ok) {
+          log.error(`unable to get contents of ${infoPath}`);
+          continue;
+        }
+
+        let lines = ByteArray.toString(info).split('\n');
+        if (lines[0] != '[Trash Info]') {
+          log.error(`unable to get contents of ${infoPath}`);
+        }
+
+
+        let pathLine = lines[1].split('=');
+        let dateLine = lines[2].split('=');
+
+        let restorePath = unescape(pathLine[1])
+        let deleteAt = GLib.DateTime.new_from_iso8601(dateLine[1], null);
+
+        let trashInfo = new TrashInfo.TrashInfo(
+          fileInfo.get_symbolic_icon(),
+          filename,
+          trashPath,
+          deleteAt,
+          restorePath);
+
+        log.debug(`adding ${trashPath}`)
+        this._trash.set(filename, trashInfo);
+        hasChanged = true;
+      }
+      children.close(null)
+      // } catch (err) {
+      //   log.error(`an exception occurred ${err}`);
+      // }
+
+      if (hasChanged) {
+        this._rebuildMenu();
+        if (this._trash.size == 0) {
+          this.trashIcon.icon_name = "user-trash-empty-symbolic";
+        } else {
+          this.trashIcon.icon_name = "user-trash-full-symbolic"
+        }
+
+      }
+    }
+
+    private _rebuildMenu() {
+      let arr = Array.from(this._trash.values());
+      let trashSort = this._settings.trashSort();
+      arr.sort(function (l: TrashInfo.TrashInfo, r: TrashInfo.TrashInfo): number {
+        switch (trashSort) {
+          case Settings.TRASH_SORT_FILE_NAME:
+            return l.filename.localeCompare(r.filename);
+
+          case Settings.TRASH_SORT_DELETE_TIME:
+            return r.deletedAt - l.deletedAt;
+
+          default:
+            log.error(`invalid sort ${trashSort}`)
+            return 0;
+        }
+      });
+
+      this._trashMenu.rebuildMenu(arr);
       this._onSearch();
     }
 
-    clearMenu() {
-      this._trashMenu.removeAll();
+    private _onSettingsChanged() {
+      log.info("settings changed");
+
+      this._rebuildMenu();
     }
 
     private _onEmptyTrash() {
@@ -187,11 +277,14 @@ export const TrashPanel = GObject.registerClass(
     }
 
     public destroy() {
+      if (this._monitorChangeID) {
+        this._monitor.disconnect(this._monitorChangeID);
+        this._monitorChangeID = 0;
+      }
       if (this._openStateChangedID) {
         this._trashMenu.disconnect(this._openStateChangedID);
         this._openStateChangedID = 0;
       }
-
       if (this._keyPressEventID) {
         this._trashMenu.scrollView.disconnect(this._keyPressEventID);
         this._keyPressEventID = 0;
