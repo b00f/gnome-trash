@@ -8,6 +8,11 @@
       <summary>Sort trash by</summary>
     </key>
 
+    <key type="u" name="activation">
+      <default>0</default>
+      <summary>On activation</summary>
+    </key>
+
     <key type="u" name="log-level">
       <default>4</default>
       <summary>

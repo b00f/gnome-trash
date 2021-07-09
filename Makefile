@@ -22,7 +22,7 @@ pack: compile
 		--extra-source=trashPanel.js \
 		--extra-source=prefs.js \
 		--extra-source=scrollMenu.js \
-		--extra-source=trashInfo.js \
+		--extra-source=trashItem.js \
 		--extra-source=trashMenu.js \
 		--extra-source=confirmDialog.js \
 		--extra-source=menuItem.js \

@@ -1,22 +1,20 @@
 // @ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-import * as TrashInfo from 'trashInfo';
+import * as TrashItem from './trashItem';
 
 const St = imports.gi.St;
 const PopupMenu = imports.ui.popupMenu;
 const GObject = imports.gi.GObject;
 const Clutter = imports.gi.Clutter;
 
-
-
 export var MenuItem = GObject.registerClass(
   class MenuItem extends PopupMenu.PopupBaseMenuItem {
     protected _init(
-      fileInfo: TrashInfo.TrashInfo,
-      onActivate: (item: MenuItem) => void,
-      onRemove: (item: MenuItem) => void,
-      onRestore: (item: MenuItem) => void) {
+      fileInfo: TrashItem.TrashItem,
+      onActivate: (item: TrashItem.TrashItem) => void,
+      onDelete: (item: TrashItem.TrashItem) => void,
+      onRestore: (item: TrashItem.TrashItem) => void) {
 
       super._init()
 
@@ -31,7 +29,7 @@ export var MenuItem = GObject.registerClass(
       let label = new St.Label({ text: fileInfo.display() });
       this.add_child(label);
       this.connect('activate', () => {
-        onActivate(this);
+        onActivate(fileInfo);
       });
 
       // restore button
@@ -53,29 +51,29 @@ export var MenuItem = GObject.registerClass(
       this.actor.add_child(restoreBtn);
       restoreBtn.connect('button-press-event',
         () => {
-          onRestore(this);
+          onRestore(fileInfo);
         }
       );
 
-      // remove button
-      let removeIcon = new St.Icon({
+      // delete button
+      let deleteIcon = new St.Icon({
         icon_name: "edit-delete-symbolic",
         style_class: 'popup-menu-icon'
       });
 
-      let removeBtn = new St.Button({
+      let deleteBtn = new St.Button({
         style_class: 'action-btn',
-        child: removeIcon
+        child: deleteIcon
       });
 
-      removeBtn.set_x_align(Clutter.ActorAlign.END);
-      removeBtn.set_x_expand(false);
-      removeBtn.set_y_expand(true);
+      deleteBtn.set_x_align(Clutter.ActorAlign.END);
+      deleteBtn.set_x_expand(false);
+      deleteBtn.set_y_expand(true);
 
-      this.actor.add_child(removeBtn);
-      removeBtn.connect('button-press-event',
+      this.actor.add_child(deleteBtn);
+      deleteBtn.connect('button-press-event',
         () => {
-          onRemove(this);
+          onDelete(fileInfo);
         }
       );
     }
