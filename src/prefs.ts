@@ -78,25 +78,48 @@ export function buildPrefsWidget() {
     };
 
     {
-        let sortStore = new Gtk.ListStore();
-        sortStore.set_column_types([GObject.TYPE_STRING]);
-        let sorting = [
+        let store = new Gtk.ListStore();
+        store.set_column_types([GObject.TYPE_STRING]);
+        let items = [
             _("File name"),
             _("Delete time"),
         ];
-        for (let s of sorting) {
-            sortStore.set(sortStore.append(), [0], [s]);
+        for (let i of items) {
+            store.set(store.append(), [0], [i]);
         }
 
         let widget = new Gtk.ComboBox({
             halign: Gtk.Align.END,
-            model: sortStore,
+            model: store,
         });
         let renderer = new Gtk.CellRendererText();
         widget.pack_start(renderer, true);
         widget.add_attribute(renderer, "text", 0);
 
         addRowAndBindSetting(prefsGrid, widget, Settings.TRASH_SORT, "Sort trash by:");
+    }
+
+    {
+        let store = new Gtk.ListStore();
+        store.set_column_types([GObject.TYPE_STRING]);
+        let items = [
+            _("Open the file"),
+            _("Restore the file"),
+            _("Delete the file"),
+        ];
+        for (let i of items) {
+            store.set(store.append(), [0], [i]);
+        }
+
+        let widget = new Gtk.ComboBox({
+            halign: Gtk.Align.END,
+            model: store,
+        });
+        let renderer = new Gtk.CellRendererText();
+        widget.pack_start(renderer, true);
+        widget.add_attribute(renderer, "text", 0);
+
+        addRowAndBindSetting(prefsGrid, widget, Settings.ACTIVATION, "Activation behavior:");
     }
 
     prefsFrame.add(prefsGrid);
