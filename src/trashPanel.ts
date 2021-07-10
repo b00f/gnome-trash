@@ -89,7 +89,11 @@ export const TrashPanel = GObject.registerClass(
       let separator1 = new PopupMenu.PopupSeparatorMenuItem();
       this.menu.addMenuItem(separator1);
 
-      this._trashMenu = new TrashMenu.TrashMenu(this._settings);
+      this._trashMenu = new TrashMenu.TrashMenu(
+        this._settings,
+        this._doOpenItem.bind(this),
+        this._doDeleteItem.bind(this),
+        this._doRestoreItem.bind(this));
       this.menu.addMenuItem(this._trashMenu);
 
       let separator2 = new PopupMenu.PopupSeparatorMenuItem();
@@ -222,8 +226,41 @@ export const TrashPanel = GObject.registerClass(
       utils.spawnAsync('nautilus', 'trash:///');
     }
 
-    private _toggle() {
-      this.menu.toggle();
+    private _doOpenItem(item: TrashItem.TrashItem) {
+      log.info(`try to open '${item.trashPath}'`);
+
+      let file = Gio.file_new_for_path(item.trashPath);
+      Gio.app_info_launch_default_for_uri(file.get_uri(), null);
+      this._close();
+    }
+
+    private _doDeleteItem(item: TrashItem.TrashItem) {
+      log.info(`try to delete '${item.filename}'`);
+
+      if (utils.spawnSync('rm', '-rf', item.trashPath)) {
+        utils.spawnSync('rm', '-f', item.infoPath);
+      }
+    }
+
+    private _doRestoreItem(item: TrashItem.TrashItem) {
+      log.info(`try to restore '${item.filename}' to: '${item.restorePath}'`);
+
+      let dst = Gio.file_new_for_path(item.restorePath);
+      if (dst.query_exists(null)) {
+        Main.notifyError(_("Operation failed"), _("Refusing to overwrite existing file."));
+      } else {
+        // Create parent directories if they are not exist
+        let parent_dir = item.restorePath.substring(0, item.restorePath.lastIndexOf("/") + 1);
+        utils.spawnSync("mkdir", "-p", parent_dir);
+
+        if (utils.spawnSync("mv", item.trashPath, item.restorePath)) {
+          utils.spawnSync("rm", item.infoPath);
+        }
+      }
+    }
+
+    private _close() {
+      this.menu.close();
     }
 
     public destroy() {
