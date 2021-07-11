@@ -9,9 +9,9 @@ export class TrashItem {
   public trashPath: string;
   public infoPath: string;
   public restorePath: string;
-  public deletedAt: number;
+  public deletedAt: string;
 
-  constructor(icon: any, filename: string, trashPath: string, infoPath: string, deletedAt: number, restorePath: string) {
+  constructor(icon: any, filename: string, trashPath: string, infoPath: string, deletedAt: string, restorePath: string) {
     this.icon = icon;
     this.filename = filename;
     this.trashPath = trashPath;

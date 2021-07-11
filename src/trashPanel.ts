@@ -91,9 +91,9 @@ export const TrashPanel = GObject.registerClass(
 
       this._trashMenu = new TrashMenu.TrashMenu(
         this._settings,
-        this._doOpenItem.bind(this),
-        this._doDeleteItem.bind(this),
-        this._doRestoreItem.bind(this));
+        this._onOpenItem.bind(this),
+        this._onDeleteItem.bind(this),
+        this._onRestoreItem.bind(this));
       this.menu.addMenuItem(this._trashMenu);
 
       let separator2 = new PopupMenu.PopupSeparatorMenuItem();
@@ -109,7 +109,7 @@ export const TrashPanel = GObject.registerClass(
     }
 
     private _setupMonitor() {
-      let infoDir = Gio.file_new_for_path(this._trashPath + 'info/');
+      let infoDir = Gio.file_new_for_path(this._trashPath + 'files/');
       this._monitor = infoDir.monitor_directory(0, null);
       this._monitorChangeID = this._monitor.connect('changed', this._onTrashChange.bind(this));
     }
@@ -117,8 +117,7 @@ export const TrashPanel = GObject.registerClass(
     private _onTrashChange() {
       log.info(`Trash has changed`);
 
-      // By Deleting a file, this function calls several times.
-      let hasChanged = false;
+      this._trash.clear();
       let trashFilesPath = this._trashPath + 'files/';
       let trashInfoPath = this._trashPath + 'info/';
       try {
@@ -131,10 +130,6 @@ export const TrashPanel = GObject.registerClass(
 
         while ((fileInfo = children.next_file(null)) != null) {
           let filename = fileInfo.get_name();
-          if (this._trash.has(filename)) {
-            continue;
-          }
-
           let trashPath = trashFilesPath + fileInfo.get_name();
           let infoPath = trashInfoPath + fileInfo.get_name() + ".trashinfo";
           let [ok, info] = GLib.file_get_contents(infoPath);
@@ -148,39 +143,41 @@ export const TrashPanel = GObject.registerClass(
             log.error(`unable to get contents of ${infoPath}`);
           }
 
-
           let pathLine = lines[1].split('=');
           let dateLine = lines[2].split('=');
 
-          let restorePath = unescape(pathLine[1])
-          let deleteAt = GLib.DateTime.new_from_iso8601(dateLine[1], null);
+          let restorePath = unescape(pathLine[1]);
+          let deletedAt = unescape(dateLine[1]);
 
           let trashItem = new TrashItem.TrashItem(
             fileInfo.get_symbolic_icon(),
             filename,
             trashPath,
             infoPath,
-            deleteAt,
+            deletedAt,
             restorePath);
 
           log.debug(`adding ${trashPath}`)
           this._trash.set(filename, trashItem);
-          hasChanged = true;
         }
         children.close(null)
       } catch (err) {
         log.error(`an exception occurred ${err}`);
       }
 
-      if (hasChanged) {
-        this._rebuildMenu();
-        if (this._trash.size == 0) {
-          this.trashIcon.icon_name = "user-trash-empty-symbolic";
-        } else {
-          this.trashIcon.icon_name = "user-trash-full-symbolic"
+      if (this._trash.size == 0) {
+        log.debug(`trash is empty`);
+        this.trashIcon.icon_name = "user-trash-empty-symbolic";
+        if (this._settings.hideButton()) {
+          this.visible = false;
         }
-
+      } else {
+        this.trashIcon.icon_name = "user-trash-full-symbolic";
+        this.show();
+        this.visible = true;
       }
+
+      this._rebuildMenu();
     }
 
     private _rebuildMenu() {
@@ -192,7 +189,7 @@ export const TrashPanel = GObject.registerClass(
             return l.filename.localeCompare(r.filename);
 
           case Settings.TRASH_SORT_DELETE_TIME:
-            return r.deletedAt - l.deletedAt;
+            return r.deletedAt.localeCompare(l.deletedAt);
 
           default:
             log.error(`invalid sort ${trashSort}`)
@@ -226,12 +223,20 @@ export const TrashPanel = GObject.registerClass(
       utils.spawnAsync('nautilus', 'trash:///');
     }
 
-    private _doOpenItem(item: TrashItem.TrashItem) {
+    private _onOpenItem(item: TrashItem.TrashItem) {
       log.info(`try to open '${item.trashPath}'`);
 
       let file = Gio.file_new_for_path(item.trashPath);
       Gio.app_info_launch_default_for_uri(file.get_uri(), null);
       this._close();
+    }
+
+    private _onDeleteItem(item: TrashItem.TrashItem) {
+      let title = _("Delete item permanently");
+      let message = _(`Are you sure you want to delete '${item.filename}'?`);
+      let subMessage = _("This operation cannot be undone.");
+
+      ConfirmDialog.openConfirmDialog(title, message, subMessage, this._doDeleteItem.bind(this, item), _("Delete"));
     }
 
     private _doDeleteItem(item: TrashItem.TrashItem) {
@@ -240,6 +245,14 @@ export const TrashPanel = GObject.registerClass(
       if (utils.spawnSync('rm', '-rf', item.trashPath)) {
         utils.spawnSync('rm', '-f', item.infoPath);
       }
+    }
+
+    private _onRestoreItem(item: TrashItem.TrashItem) {
+      let title = _("Restore item?");
+      let message = _(`Restore '${item.filename}' to: '${item.restorePath}'`);
+      let sub_message = _(`Deleted at: ${item.deletedAt}`);
+
+      ConfirmDialog.openConfirmDialog(title, message, sub_message, this._doRestoreItem.bind(this, item), _("Restore"));
     }
 
     private _doRestoreItem(item: TrashItem.TrashItem) {

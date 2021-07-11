@@ -13,6 +13,11 @@
       <summary>On activation</summary>
     </key>
 
+    <key type="b" name="hide-button">
+      <default>false</default>
+      <summary>Hide button when trash is empty</summary>
+    </key>
+
     <key type="u" name="log-level">
       <default>4</default>
       <summary>

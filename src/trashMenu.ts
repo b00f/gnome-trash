@@ -7,10 +7,6 @@ import * as TrashItem from 'trashItem';
 import * as Settings from 'settings';
 import * as ConfirmDialog from 'confirmDialog';
 import * as log from 'log';
-import * as utils from 'utils';
-
-const Main = imports.ui.main;
-const { Gio } = imports.gi;
 
 export class TrashMenu
   extends ScrollMenu.ScrollMenu {
@@ -30,6 +26,8 @@ export class TrashMenu
   }
 
   public rebuildMenu(trash: Array<TrashItem.TrashItem>) {
+    log.info(`rebuild menu`);
+
     super.removeAll();
 
     trash.forEach((info, _) => {
@@ -66,7 +64,7 @@ export class TrashMenu
     let message = _(`Are you sure you want to delete '${item.filename}'?`);
     let subMessage = _("This operation cannot be undone.");
 
-    ConfirmDialog.openConfirmDialog(title, message, subMessage, (this._doDeleteItem(item)), _("Delete"));
+    ConfirmDialog.openConfirmDialog(title, message, subMessage, this._doDeleteItem(item), _("Delete"));
   }
 
   private _onRestoreItem(item: TrashItem.TrashItem) {
@@ -74,6 +72,6 @@ export class TrashMenu
     let message = _(`Restore '${item.filename}' to: '${item.restorePath}'`);
     let sub_message = _(`Deleted at: ${item.deletedAt}`);
 
-    ConfirmDialog.openConfirmDialog(title, message, sub_message, (this._doRestoreItem(item)), _("Restore"));
+    ConfirmDialog.openConfirmDialog(title, message, sub_message, this._doRestoreItem(item), _("Restore"));
   }
 }

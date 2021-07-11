@@ -96,7 +96,7 @@ export function buildPrefsWidget() {
         widget.pack_start(renderer, true);
         widget.add_attribute(renderer, "text", 0);
 
-        addRowAndBindSetting(prefsGrid, widget, Settings.TRASH_SORT, "Sort trash by:");
+        addRowAndBindSetting(prefsGrid, widget, Settings.TRASH_SORT, _("Sort trash by"));
     }
 
     {
@@ -119,7 +119,15 @@ export function buildPrefsWidget() {
         widget.pack_start(renderer, true);
         widget.add_attribute(renderer, "text", 0);
 
-        addRowAndBindSetting(prefsGrid, widget, Settings.ACTIVATION, "Activation behavior:");
+        addRowAndBindSetting(prefsGrid, widget, Settings.ACTIVATION, _("Activation behavior"));
+    }
+
+    {
+        let widget = new Gtk.Switch({
+            halign: Gtk.Align.END,
+        });
+
+        addRowAndBindSetting(prefsGrid, widget, Settings.HIDE_BUTTON, _("Hide button when trash is empty"));
     }
 
     prefsFrame.add(prefsGrid);

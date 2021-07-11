@@ -67,7 +67,7 @@ export function openConfirmDialog(
   title: string,
   message: string,
   subMessage: string,
-  callback: () => void,
+  callback: (data: any) => void,
   okLabel = _("OK"),
   cancelLabel = _("Cancel")) {
     if (!_confirmDialog) {

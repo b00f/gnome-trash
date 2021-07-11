@@ -21,6 +21,7 @@ export const SCHEMA_ID = 'org.gnome.shell.extensions.gnome-trash';
 
 export const TRASH_SORT = "trash-sort";
 export const ACTIVATION = "activation";
+export const HIDE_BUTTON = "hide-button";
 
 
 export const TRASH_SORT_FILE_NAME = 0;
@@ -44,5 +45,9 @@ export class ExtensionSettings {
 
     activation(): number {
         return this._settings.get_uint(ACTIVATION);
+    }
+
+    hideButton(): boolean {
+        return this._settings.get_boolean(HIDE_BUTTON);
     }
 }
