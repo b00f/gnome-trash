@@ -249,7 +249,7 @@ export const TrashPanel = GObject.registerClass(
 
     private _onRestoreItem(item: TrashItem.TrashItem) {
       let title = _("Restore item?");
-      let message = _(`Restore '${item.filename}' to: '${item.restorePath}'`);
+      let message = _(`Restore '${item.filename}' to:\n'${item.restorePath}'`);
       let sub_message = _(`Deleted at: ${item.deletedAt}`);
 
       ConfirmDialog.openConfirmDialog(title, message, sub_message, this._doRestoreItem.bind(this, item), _("Restore"));
