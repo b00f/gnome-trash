@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-25 13:45+0800\n"
+"POT-Creation-Date: 2021-07-22 21:09+0800\n"
 "PO-Revision-Date: 2020-04-20 11:37+0800\n"
 "Last-Translator:  <mostafa.sedaghat@gmail.com>\n"
 "Language-Team: Persian <translation-team-fa@lists.sourceforge.net>\n"
@@ -16,9 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, javascript-format
-msgid "Are you sure you want to delete '%s'?"
-msgstr "مطمئنید می‌خواهید '%s' را حذف کنید؟"
+msgid "Activation behavior"
+msgstr ""
 
 msgid "Are you sure you want to delete all items from the trash?"
 msgstr "مطمئنید می‌خواهید همه آیتمهای زباله‌دان را حذف کنید؟"
@@ -26,21 +25,17 @@ msgstr "مطمئنید می‌خواهید همه آیتمهای زباله‌د
 msgid "Cancel"
 msgstr "لغو"
 
-#, javascript-format
-msgid "Cause: %s"
-msgstr "بخاطر: %s"
-
 msgid "Delete"
 msgstr "حذف"
 
 msgid "Delete item permanently"
 msgstr "حذف آیتم برای همیشه"
 
-msgid "Deleted at: "
-msgstr "حذف شده در: "
+msgid "Delete the file"
+msgstr ""
 
-msgid "Don't ask until next login."
-msgstr "تا لاگین بعدی نپرس"
+msgid "Delete time"
+msgstr ""
 
 msgid "Empty"
 msgstr "خالی کردن"
@@ -51,20 +46,35 @@ msgstr "خالی کردن زباله‌دان "
 msgid "Empty Trash?"
 msgstr "خالی کردن زباله‌دان؟"
 
-msgid "Error"
-msgstr "خطا"
+msgid "File name"
+msgstr ""
+
+msgid "Gnome Trash"
+msgstr ""
 
 msgid "Gnome-trash failed to start"
 msgstr "زباله‌دان گنوم موفق به اجرا نشد"
 
+msgid "Hide button when trash is empty"
+msgstr ""
+
 msgid "No trash folder is detected."
 msgstr "هیچ زباله‌دانی یافت نشد"
+
+msgid "OK"
+msgstr ""
 
 msgid "Open Trash"
 msgstr "باز کردن زباله‌دان"
 
+msgid "Open the file"
+msgstr ""
+
 msgid "Operation failed"
 msgstr "عملیات ناموفق"
+
+msgid "Preferences"
+msgstr ""
 
 msgid "Refusing to overwrite existing file."
 msgstr "فایل مقصد موجود می‌باشد"
@@ -72,18 +82,41 @@ msgstr "فایل مقصد موجود می‌باشد"
 msgid "Restore"
 msgstr "بازیابی"
 
-#, javascript-format
-msgid "Restore '%s' to:"
-msgstr "بازیابی آیتم %s به"
-
 msgid "Restore item?"
 msgstr "بازیابی آیتم؟"
+
+msgid "Restore the file"
+msgstr ""
+
+msgid "Sort trash by"
+msgstr ""
 
 msgid "This operation cannot be undone."
 msgstr "این عملیات برگشت پذیر نیست."
 
-msgid "Trash"
-msgstr "زباله‌دان"
-
 msgid "Type here to search..."
 msgstr "برای جستجو اینجا تایپ کنید..."
+
+#, javascript-format
+#~ msgid "Are you sure you want to delete '%s'?"
+#~ msgstr "مطمئنید می‌خواهید '%s' را حذف کنید؟"
+
+#, javascript-format
+#~ msgid "Cause: %s"
+#~ msgstr "بخاطر: %s"
+
+#~ msgid "Deleted at: "
+#~ msgstr "حذف شده در: "
+
+#~ msgid "Don't ask until next login."
+#~ msgstr "تا لاگین بعدی نپرس"
+
+#~ msgid "Error"
+#~ msgstr "خطا"
+
+#, javascript-format
+#~ msgid "Restore '%s' to:"
+#~ msgstr "بازیابی آیتم %s به"
+
+#~ msgid "Trash"
+#~ msgstr "زباله‌دان"

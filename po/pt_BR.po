@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-25 13:45+0800\n"
+"POT-Creation-Date: 2021-07-22 21:09+0800\n"
 "PO-Revision-Date: 2013-05-23 00:18+0100\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: Brazilian Portuguese <renato.cferreira@hotmail.com>\n"
@@ -19,8 +19,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#, javascript-format
-msgid "Are you sure you want to delete '%s'?"
+msgid "Activation behavior"
 msgstr ""
 
 msgid "Are you sure you want to delete all items from the trash?"
@@ -29,20 +28,16 @@ msgstr "Você realmente deseja deletar todos os itens da Lixeira?"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#, javascript-format
-msgid "Cause: %s"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 
 msgid "Delete item permanently"
 msgstr ""
 
-msgid "Deleted at: "
+msgid "Delete the file"
 msgstr ""
 
-msgid "Don't ask until next login."
+msgid "Delete time"
 msgstr ""
 
 msgid "Empty"
@@ -54,19 +49,34 @@ msgstr "Lixeira vazia"
 msgid "Empty Trash?"
 msgstr "Esvaziar Lixeira?"
 
-msgid "Error"
+msgid "File name"
+msgstr ""
+
+msgid "Gnome Trash"
 msgstr ""
 
 msgid "Gnome-trash failed to start"
 msgstr ""
 
+msgid "Hide button when trash is empty"
+msgstr ""
+
 msgid "No trash folder is detected."
+msgstr ""
+
+msgid "OK"
 msgstr ""
 
 msgid "Open Trash"
 msgstr "Abrir Lixeira"
 
+msgid "Open the file"
+msgstr ""
+
 msgid "Operation failed"
+msgstr ""
+
+msgid "Preferences"
 msgstr ""
 
 msgid "Refusing to overwrite existing file."
@@ -75,18 +85,20 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
-#, javascript-format
-msgid "Restore '%s' to:"
+msgid "Restore item?"
 msgstr ""
 
-msgid "Restore item?"
+msgid "Restore the file"
+msgstr ""
+
+msgid "Sort trash by"
 msgstr ""
 
 msgid "This operation cannot be undone."
 msgstr "Esta operação não pode ser desfeita."
 
-msgid "Trash"
-msgstr "Abrir Lixeira"
-
 msgid "Type here to search..."
 msgstr ""
+
+#~ msgid "Trash"
+#~ msgstr "Abrir Lixeira"

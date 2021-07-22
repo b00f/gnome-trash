@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-trash\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-25 13:45+0800\n"
+"POT-Creation-Date: 2021-07-22 21:09+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, javascript-format
-msgid "Are you sure you want to delete '%s'?"
+msgid "Activation behavior"
 msgstr ""
 
 msgid "Are you sure you want to delete all items from the trash?"
@@ -27,20 +26,16 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#, javascript-format
-msgid "Cause: %s"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 
 msgid "Delete item permanently"
 msgstr ""
 
-msgid "Deleted at: "
+msgid "Delete the file"
 msgstr ""
 
-msgid "Don't ask until next login."
+msgid "Delete time"
 msgstr ""
 
 msgid "Empty"
@@ -52,19 +47,34 @@ msgstr ""
 msgid "Empty Trash?"
 msgstr ""
 
-msgid "Error"
+msgid "File name"
+msgstr ""
+
+msgid "Gnome Trash"
 msgstr ""
 
 msgid "Gnome-trash failed to start"
 msgstr ""
 
+msgid "Hide button when trash is empty"
+msgstr ""
+
 msgid "No trash folder is detected."
+msgstr ""
+
+msgid "OK"
 msgstr ""
 
 msgid "Open Trash"
 msgstr ""
 
+msgid "Open the file"
+msgstr ""
+
 msgid "Operation failed"
+msgstr ""
+
+msgid "Preferences"
 msgstr ""
 
 msgid "Refusing to overwrite existing file."
@@ -73,17 +83,16 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
-#, javascript-format
-msgid "Restore '%s' to:"
-msgstr ""
-
 msgid "Restore item?"
 msgstr ""
 
-msgid "This operation cannot be undone."
+msgid "Restore the file"
 msgstr ""
 
-msgid "Trash"
+msgid "Sort trash by"
+msgstr ""
+
+msgid "This operation cannot be undone."
 msgstr ""
 
 msgid "Type here to search..."
