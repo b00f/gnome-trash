@@ -8,12 +8,11 @@ export var ActionBar = GObject.registerClass(
       super._init({
         activate: false,
         hover: false,
-        style_class: 'action-box',
+        style_class: 'action-bar',
       })
 
       let actionsBox = new St.BoxLayout({
         vertical: false,
-        style_class: 'action-box-layout',
       });
 
       // Open trash button
