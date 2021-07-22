@@ -1,10 +1,8 @@
 {
   "shell-version": [
-    "3.34",
-    "3.36",
     "3.38"
   ],
-  "version": 14,
+  "version": 2,
   "gettext-domain" : "gnome-trash",
   "uuid": "gnome-trash@b00f.github.io",
   "name": "Gnome Trash",
