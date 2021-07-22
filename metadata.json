@@ -4,10 +4,10 @@
     "3.36",
     "3.38"
   ],
-  "version": 12,
+  "version": 14,
   "gettext-domain" : "gnome-trash",
-  "uuid": "gnome-trash@gnome-trash.b00f.gitlab.com",
+  "uuid": "gnome-trash@b00f.github.io",
   "name": "Gnome Trash",
-  "description": "A gnome shell extension to manage your trash. You can manage trash items from the panel and open or empty the trash.\nIt hides completely when the trash is empty, and lists the files in the trash bin in the panel menu.",
-  "url": "https://gitlab.com/b00f/gnome-trash"
+  "description": "A gnome shell extension to manage your home trash. You can manage trash items from the panel and open or empty the trash.",
+  "url": "https://github.com/b00f/gnome-trash"
 }

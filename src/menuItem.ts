@@ -78,8 +78,8 @@ export var MenuItem = GObject.registerClass(
       );
     }
 
-    text(): string {
-      return this.fileInfo.text;
+    public text(): string {
+      return this.fileInfo.filename;
     }
   }
 );

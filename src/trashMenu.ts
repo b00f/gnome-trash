@@ -36,6 +36,7 @@ export class TrashMenu
         this._onDeleteItem.bind(this),
         this._onRestoreItem.bind(this));
 
+
       super.addMenuItem(item);
     });
   }
