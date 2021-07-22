@@ -2,13 +2,14 @@
 
 A gnome shell extension to manage your **home trash**.
 
-![Screenshot](https://github.com/b00f/gnome-trash/-/raw/master/media/screenshot.png "Screenshot")
-
 It allows you to manage the trash items and empty or open the Trash folder. It lists the files in the trash bin in the panel menu.
 
 Note: This extension is only shows items under home trash folder(`~/.local/share/Trash`).
 
-## Install from source code
+## Installation
+
+To install the most recent official release: Visit Gnome Trash on the [Official GNOME Extensions](https://extensions.gnome.org/extension/4410/gnome-trash/) page.
+### From source code
 
 A `Makefile` is included. Then all you have to do is run the command below
 ```
