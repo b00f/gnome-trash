@@ -1,6 +1,6 @@
 # Gnome Trash
 
-A gnome shell extension to manage your **home trash**.
+A gnome shell extension to manage your **Gnome Trash**.
 
 It allows you to manage the trash items and empty or open the Trash folder. It lists the files in the trash bin in the panel menu.
 
