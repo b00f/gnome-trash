@@ -90,8 +90,7 @@ export const TrashPanel = GObject.registerClass(
       this.menu.addMenuItem(separator1);
 
       this._trashMenu = new TrashMenu.TrashMenu(
-        this._settings,
-        this._onOpenItem.bind(this),
+        this._onActivateItem.bind(this),
         this._onDeleteItem.bind(this),
         this._onRestoreItem.bind(this));
       this.menu.addMenuItem(this._trashMenu);
@@ -207,6 +206,25 @@ export const TrashPanel = GObject.registerClass(
       this._rebuildMenu();
     }
 
+    private _onActivateItem(item: TrashItem.TrashItem) {
+      switch (this._settings.activation()) {
+        case Settings.ACTIVATION_OPEN:
+          this._doOpenItem(item)
+          break;
+
+        case Settings.ACTIVATION_DELETE:
+          this._onDeleteItem(item)
+          break;
+
+        case Settings.ACTIVATION_RESTORE:
+          this._onRestoreItem(item)
+          break;
+
+        default:
+          log.error(`invalid activation ${this._settings.activation()}`);
+      }
+    }
+
     private _onEmptyTrash() {
       const title = _("Empty Trash?");
       const message = _("Are you sure you want to delete all items from the trash?");
@@ -223,7 +241,7 @@ export const TrashPanel = GObject.registerClass(
       utils.spawnAsync('nautilus', 'trash:///');
     }
 
-    private _onOpenItem(item: TrashItem.TrashItem) {
+    private _doOpenItem(item: TrashItem.TrashItem) {
       log.info(`try to open '${item.trashPath}'`);
 
       let file = Gio.file_new_for_path(item.trashPath);
