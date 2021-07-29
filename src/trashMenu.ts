@@ -38,15 +38,15 @@ export class TrashMenu
     });
   }
 
-  private onActivateItem(item: TrashItem.TrashItem) {
-    this._onActivateItem(item)
+  private onActivateItem(item: typeof MenuItem.MenuItem) {
+    this._onActivateItem(item.fileInfo)
   }
 
-  private onDeleteItem(item: TrashItem.TrashItem) {
-    this._onDeleteItem(item)
+  private onDeleteItem(item: typeof MenuItem.MenuItem) {
+    this._onDeleteItem(item.fileInfo)
   }
 
-  private onRestoreItem(item: TrashItem.TrashItem) {
-    this._onRestoreItem(item)
+  private onRestoreItem(item: typeof MenuItem.MenuItem) {
+    this._onRestoreItem(item.fileInfo)
   }
 }

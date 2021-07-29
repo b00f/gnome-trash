@@ -12,9 +12,9 @@ export var MenuItem = GObject.registerClass(
   class MenuItem extends PopupMenu.PopupBaseMenuItem {
     protected _init(
       fileInfo: TrashItem.TrashItem,
-      onActivate: (item: TrashItem.TrashItem) => void,
-      onDelete: (item: TrashItem.TrashItem) => void,
-      onRestore: (item: TrashItem.TrashItem) => void) {
+      onActivate: (item: MenuItem) => void,
+      onDelete: (item: MenuItem) => void,
+      onRestore: (item: MenuItem) => void) {
 
       super._init()
 
@@ -29,7 +29,7 @@ export var MenuItem = GObject.registerClass(
       let label = new St.Label({ text: fileInfo.display() });
       this.add_child(label);
       this.connect('activate', () => {
-        onActivate(fileInfo);
+        onActivate(this);
       });
 
       // restore button
@@ -51,7 +51,7 @@ export var MenuItem = GObject.registerClass(
       this.actor.add_child(restoreBtn);
       restoreBtn.connect('button-press-event',
         () => {
-          onRestore(fileInfo);
+          onRestore(this);
         }
       );
 
@@ -73,7 +73,7 @@ export var MenuItem = GObject.registerClass(
       this.actor.add_child(deleteBtn);
       deleteBtn.connect('button-press-event',
         () => {
-          onDelete(fileInfo);
+          onDelete(this);
         }
       );
     }
