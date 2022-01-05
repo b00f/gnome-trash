@@ -25,21 +25,26 @@ export function buildPrefsWidget() {
 
     let box = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
-        margin: 18,
+        margin_start: 18,
+        margin_end: 18,
+        margin_top: 18,
+        margin_bottom: 18,
     });
 
     let prefsFrame = new Gtk.Frame({
         label: _("Preferences"),
     });
-    box.add(prefsFrame);
+    box.append(prefsFrame);
 
     let prefsGrid = new Gtk.Grid({
-        margin: 18,
         column_spacing: 12,
         row_spacing: 12,
         row_homogeneous: false,
         column_homogeneous: true,
-
+        margin_start: 18,
+        margin_end: 18,
+        margin_top: 18,
+        margin_bottom: 18,
     });
 
     let row = 0
@@ -130,9 +135,7 @@ export function buildPrefsWidget() {
         addRowAndBindSetting(prefsGrid, widget, Settings.HIDE_BUTTON, _("Hide button when trash is empty"));
     }
 
-    prefsFrame.add(prefsGrid);
-
-    box.show_all();
+    prefsFrame.set_child(prefsGrid);
 
     return box;
 }
