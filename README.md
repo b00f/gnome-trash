@@ -9,7 +9,10 @@ Note: This extension is only shows items under home trash folder(`~/.local/share
 ## Installation
 
 To install the most recent official release: Visit Gnome Trash on the [Official GNOME Extensions](https://extensions.gnome.org/extension/4410/gnome-trash/) page.
+
 ### From source code
+
+Before compiling the code make sure you have installed Typescript.
 
 A `Makefile` is included. Then all you have to do is run the command below
 ```
