@@ -164,18 +164,6 @@ export const TrashPanel = GObject.registerClass(
         log.error(`an exception occurred ${err}`);
       }
 
-      if (this._trash.size == 0) {
-        log.debug(`trash is empty`);
-        this.trashIcon.icon_name = "user-trash-empty-symbolic";
-        if (this._settings.hideButton()) {
-          this.visible = false;
-        }
-      } else {
-        this.trashIcon.icon_name = "user-trash-full-symbolic";
-        this.show();
-        this.visible = true;
-      }
-
       this._rebuildMenu();
     }
 
@@ -198,6 +186,18 @@ export const TrashPanel = GObject.registerClass(
 
       this._trashMenu.rebuildMenu(arr);
       this._onSearch();
+
+      // Update button
+      this.trashIcon.icon_name = "user-trash-full-symbolic";
+      this.visible = true;
+
+      if (this._trash.size == 0) {
+        log.debug(`trash is empty`);
+        this.trashIcon.icon_name = "user-trash-empty-symbolic";
+        if (this._settings.hideButton()) {
+          this.visible = false;
+        }
+      }
     }
 
     private _onSettingsChanged() {
