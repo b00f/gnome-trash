@@ -238,7 +238,7 @@ export const TrashPanel = GObject.registerClass(
     }
 
     private _onOpenTrash() {
-      utils.spawnAsync('nautilus', 'trash:///');
+      utils.spawnAsync('xdg-open', 'trash:///');
     }
 
     private _doOpenItem(item: TrashItem.TrashItem) {
