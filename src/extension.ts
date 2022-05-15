@@ -24,21 +24,25 @@ export class GnomeExtension {
   enable() {
     log.info(`enabling...`);
 
-    this._panel = new TrashPanel.TrashPanel();
-    Main.panel.addToStatusArea(this._uuid, this._panel);
+    if (!this._panel) {
+      this._panel = new TrashPanel.TrashPanel();
+      Main.panel.addToStatusArea(this._uuid, this._panel);
+    }
   }
 
   disable() {
     log.info(`disabling...`);
 
-    this._panel.destroy();
-    this._panel = null;
+    if (!this._panel) {
+      this._panel.destroy();
+      this._panel = null;
+    }
   }
 }
 
 // @ts-ignore
 function init(meta) {
-  log.info(`initializing...`);
+  log.info(`initializing Gnome Trash version ${Me.metadata.version} ...`);
 
   return new GnomeExtension(meta.uuid);
 }

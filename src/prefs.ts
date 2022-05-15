@@ -17,7 +17,7 @@ const Gettext = imports.gettext;
 const _ = Gettext.domain('gnome-trash').gettext;
 
 export function init() {
-    Gtk.init(null);
+    Gtk.init();
 }
 
 export function buildPrefsWidget() {

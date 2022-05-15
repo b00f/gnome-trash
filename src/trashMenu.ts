@@ -8,9 +8,9 @@ import * as log from 'log';
 
 export class TrashMenu
   extends ScrollMenu.ScrollMenu {
-    private _onActivateItem: (item: TrashItem.TrashItem) => void;
-    private _onDeleteItem: (item: TrashItem.TrashItem) => void;
-    private _onRestoreItem: (item: TrashItem.TrashItem) => void;
+  private _onActivateItem: (item: TrashItem.TrashItem) => void;
+  private _onDeleteItem: (item: TrashItem.TrashItem) => void;
+  private _onRestoreItem: (item: TrashItem.TrashItem) => void;
 
   constructor(
     onActivateItem: (item: TrashItem.TrashItem) => void,
@@ -32,21 +32,21 @@ export class TrashMenu
       let item = new MenuItem.MenuItem(info,
         this.onActivateItem.bind(this),
         this.onDeleteItem.bind(this),
-        this.onRestoreItem.bind(this),);
+        this.onRestoreItem.bind(this));
 
       super.addMenuItem(item);
     });
   }
 
-  private onActivateItem(item: typeof MenuItem.MenuItem) {
+  private onActivateItem(item: MenuItem.MenuItem) {
     this._onActivateItem(item.fileInfo)
   }
 
-  private onDeleteItem(item: typeof MenuItem.MenuItem) {
+  private onDeleteItem(item: MenuItem.MenuItem) {
     this._onDeleteItem(item.fileInfo)
   }
 
-  private onRestoreItem(item: typeof MenuItem.MenuItem) {
+  private onRestoreItem(item: MenuItem.MenuItem) {
     this._onRestoreItem(item.fileInfo)
   }
 }
