@@ -33,7 +33,7 @@ export class GnomeExtension {
   disable() {
     log.info(`disabling...`);
 
-    if (!this._panel) {
+    if (this._panel) {
       this._panel.destroy();
       this._panel = null;
     }
