@@ -11,13 +11,17 @@ export class ActionBar extends
 
   constructor() {
     super({
+      reactive: false,
       activate: false,
       hover: false,
+      can_focus: false,
       style_class: 'action-bar',
     })
 
     let actionsBox = new St.BoxLayout({
       vertical: false,
+      hover: false,
+      can_focus: false,
     });
 
     // Open trash button
